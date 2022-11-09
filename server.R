@@ -128,7 +128,7 @@ The application is not a medical device according to the Medical Devices Act or 
       selectInput('column5',label = HTML("...first antimicrobial agent:"),choices = names(input2))
     })
     output$columnUI6<-renderText({"Note: All subsequent columns are assumed to contain information on antimicrobial agents as well. 
-      The following coding of resistance information is required: 'S' for susceptible, 'I' susceptible increased exposure, 'R' for resistant, '-' for not analyzed."})
+      The following coding of resistance information is required: 'S' for susceptible, 'I' for susceptible increased exposure, 'R' for resistant, '-' for not analyzed."})
     
     output$do_in2UI<-renderUI({
       actionButton('do_in2',"Configure input",class = "btn-primary")
@@ -1264,14 +1264,14 @@ The application is not a medical device according to the Medical Devices Act or 
       progress$close()
       shinyjs::html("text", paste0("<br><br>","Statistical analysis of ",
                                    length(bakterien_update)," species successfully conducted.","<br>"), add = TRUE)  
-      shinyjs::html("text", paste0("<br>","Hinweis:"),add=TRUE)
+      shinyjs::html("text", paste0("<br>","Note:"),add=TRUE)
       shinyjs::html("text",paste0("<br>","For each species, only those antimicrobial agents for which at least 30 observations are available are reported."), add = TRUE)  
 
       })
     
     output$do_statistik_xlsx <- downloadHandler(
       filename = function() {
-        paste0("GEFAAR_Resistance_Statistics_",input$statistik1,"_Specimen_",input$statistik2.2,"_Species_",input$statistik2,"_clinic_",input$statistik3,".xlsx")
+        paste0("GEFAAR_Resistance_Statistics_",input$statistik1,"_Specimen_",input$statistik2.2,"_Species_",input$statistik2,"_Clinic_",input$statistik3,".xlsx")
         #"Test.xlsx"
       },
       content = function(file) {
