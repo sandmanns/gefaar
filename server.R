@@ -36,6 +36,7 @@ shinyServer(function(input, output, session) {
   output$text_zusammenfassung0b<-renderText({"Resistance statistics: Data sheet antimicrobial agents"})
   output$text_zusammenfassung0c<-renderText({NULL})  
   output$hinweis_tabellen<-renderText({"Note: In case all species are analyzed at once, it may take up to 30 seconds until the updated tables are displayed."})
+  output$hinweis_tabellen_trend<-renderText({NULL})
 
   output$text_zusammenfassung0b2<-renderText({"Resistance statistics: Figures antimicrobial agents"})
   output$text_zusammenfassung0c2<-renderText({NULL})
@@ -43,6 +44,9 @@ shinyServer(function(input, output, session) {
   
   output$text_erregerstat1<-renderText({"Pathogen statistics"})
   output$text_erregerstat2<-renderText({"Analysis not yet conducted"})
+  
+  output$text_trend1<-renderText({"Trend analysis"})
+  output$text_trend2<-renderText({"Analysis not yet conducted"})
   
   output$text_zusammenfassung1b<-renderText({"Summary clinics"})
   output$text_zusammenfassung1<-renderText({"Analysis not yet conducted"})
@@ -56,11 +60,11 @@ shinyServer(function(input, output, session) {
   output$text_info2c<-renderText({"Albert-Schweitzer-Campus 1, Building A11"})
   output$text_info2d<-renderText({"48149 Münster"})
   output$text_info2b<-renderText({"Univ.-Prof. Dr. med. Julian Varghese, M.Sc."})
-  output$text_info2b2<-renderText({"Dr. rer. medic. Sarah Sandmann"})
+  output$text_info2b2<-renderText({"PD Dr. Sarah Sandmann"})
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Last change: 07.11.2022"})
+  output$text_info2g<-renderText({"Latest update: 21.03.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -188,6 +192,36 @@ The application is not a medical device according to the Medical Devices Act or 
     }
     
     
+    if(input$column4b=="dd.mm.yy"){
+      if(nchar(input2$ORD_DATUM[1])!=8||length(grep(".",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format dd.mm.yy specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
+    if(input$column4b=="dd.mm.yyyy"){
+      if(nchar(input2$ORD_DATUM[1])!=10||length(grep(".",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format dd.mm.yyyy specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
+    if(input$column4b=="mm/dd/yy"){
+      if(nchar(input2$ORD_DATUM[1])!=8||length(grep("/",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format mm/dd/yy specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
+    if(input$column4b=="mm/dd/yyyy"){
+      if(nchar(input2$ORD_DATUM[1])!=10||length(grep("/",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format mm/dd/yyyy specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
+    if(input$column4b=="yy-mm-dd"){
+      if(nchar(input2$ORD_DATUM[1])!=8||length(grep("-",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format yy-mm-dd specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
+    if(input$column4b=="yyyy-mm-dd"){
+      if(nchar(input2$ORD_DATUM[1])!=10||length(grep("-",input2$ORD_DATUM[1],fixed=T))==0){
+        shinyjs::html("text", paste0("<br>NOTE: Date format yyyy-mm-dd specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
+      }
+    }
     
     
     
@@ -641,15 +675,179 @@ The application is not a medical device according to the Medical Devices Act or 
     
     runBuildModel <- function(input, output) {
       rv$outputText = paste0("<b>Year: </b>",input$statistik1,"<br>",
-                             "<b>Species: </b>",input$statistik2,"<br>",
                              "<b>Specimen: </b>",input$statistik2.2,"<br>",
-                             "<b>Clinic: </b>",input$statistik3)
+                             "<b>Clinic: </b>",input$statistik3,"<br>",
+                             "<b>Species: </b>",input$statistik2)
       #shinyjs::html(id = 'text_zusammenfassung0c', rv$outputText)
       #shinyjs::html(id = 'text_zusammenfassung0c2', rv$outputText)
-            rv$outputText2 = paste0("<b>Year: </b>",input$statistik1,"<br>",
+      rv$outputText2 = paste0("<b>Year: </b>",input$statistik1,"<br>",
                               "<b>Specimen: </b>",input$statistik2.2)
+      rv$outputText3 = paste0("<b>Material: </b>",input$trend2.2,"<br>",
+                              "<b>Clinic: </b>",input$trend3,"<br>",
+                              "<b>Species: </b>",input$trend2,"<br>",
+                              "<b>Antimicrobial: </b>",input$trend2.3)
+      rv$outputText4 = paste0("<b>Year: </b>",input$erregerstat1,"<br>",
+                              "<b>Specimen: </b>",input$erregerstat2.2,"<br>",
+                              "<b>Clinic: </b>",input$erregerstat3)
     }
 
+    
+    
+    
+    
+    ##Start Analyse-Konfiguration - Trend
+    output$trendUI1<-renderUI({
+      h4("Trend analysis")
+    })
+    
+    if(input$column4b=="dd.mm.yy"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+    }
+    if(input$column4b=="dd.mm.yyyy"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+    }
+    if(input$column4b=="mm/dd/yy"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+    }
+    if(input$column4b=="mm/dd/yyyy"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+    }
+    if(input$column4b=="yy-mm-dd"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+    }
+    if(input$column4b=="yyyy-mm-dd"){
+      helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+    }
+    
+    #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+    years<-unique(format(helper1,"%Y"))
+    
+    output$trendUI3.2<-renderUI({
+      material_all<-unique(input2$ORD_MATERIAL)
+      for(y in years){
+        material_temp<-unique(input2$ORD_MATERIAL[format(helper1,"%Y")==y])
+        material_all<-material_all[material_all%in%material_temp]
+      }
+      material_helper<-material_all
+      material_helper<-material_helper[order(material_helper)]
+      selectInput('trend2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+    })
+    
+    output$trendUI4<-renderUI({
+      if(input$trend2.2=="All"){
+        fb_all<-unique(input2$ORD_FACHBEREICH)
+        for(y in years){
+          fb_temp<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==y])
+          fb_all<-fb_all[fb_all%in%fb_temp]
+        }
+        fb_helper<-fb_all
+      }else{
+        fb_all<-unique(input2$ORD_FACHBEREICH[input2$ORD_MATERIAL==input$trend2.2])
+        for(y in years){
+          fb_temp<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==y&input2$ORD_MATERIAL==input$trend2.2])
+          fb_all<-fb_all[fb_all%in%fb_temp]
+        }
+        fb_helper<-fb_all
+      }
+      fb_helper<-fb_helper[order(fb_helper)]
+      trend_fb<-c("All",fb_helper)
+      
+      selectInput('trend3',label = "Clinic",choices = trend_fb,selected = "All")
+    })
+    
+    output$trendUI3<-renderUI({
+      alle_bakterien<-input2$RES_ERREGER
+      if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
+        alle_bakterien<-alle_bakterien
+        helper_neu<-helper1
+      }
+      if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
+        alle_bakterien<-alle_bakterien[input2$ORD_MATERIAL==input$trend2.2]
+        helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2]
+      }
+      if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
+        alle_bakterien<-alle_bakterien[input2$ORD_FACHBEREICH==input$trend3]
+        helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3]
+      }
+      if(input$trend2.2!="All"&&input$trend3!="All"){
+        alle_bakterien<-alle_bakterien[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2]
+        helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2]
+      }
+      
+      if(length(helper_neu)>0){
+        all_years<-format(helper_neu,"%Y")
+        alle_bakterien_table<-table(alle_bakterien,all_years)
+        
+        #alle_bakterien_table<-alle_bakterien_table[rowSums(alle_bakterien_table>30)==length(alle_bakterien_table[1,]),]
+        #for(laenge in 1:length(alle_bakterien_table[1,])){
+        #  alle_bakterien_table<-alle_bakterien_table[alle_bakterien_table[,laenge]>30,]
+        #}
+        #bakterien_helper<-row.names(alle_bakterien_table)
+        bakterien_helper<-row.names(alle_bakterien_table)[rowSums(alle_bakterien_table>30)==length(alle_bakterien_table[1,])]
+        if(length(bakterien_helper)>0){
+          selectInput('trend2',label = "Species",choices = c(bakterien_helper))
+        }else{
+          selectInput('trend2',label = "Species",choices = c("Insufficient number of cases"))
+        }
+      }else{
+        selectInput('trend2',label = "Species",choices = c("Insufficient number of cases"))
+      }
+      
+    })
+    
+    output$trendUI3.3<-renderUI({
+      if(input$trend2!="Insufficient number of cases"){
+        input_filter<-input2
+        if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
+          input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
+          input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
+          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2!="All"&&input$trend3!="All"){
+          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+        }
+        all_years<-format(helper_neu,"%Y")
+        
+        temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
+        temp_ab<-temp_ab[temp_ab>0]
+        temp_ab_namen<-names(temp_ab)
+        temp_ab_namen_final<-c()
+        
+        for(ab_relevant in temp_ab_namen){
+          for(year_is in unique(all_years)){
+            temp_ab_test<-input_filter[all_years==year_is,names(input_filter)==ab_relevant]
+            if(sum(temp_ab_test!="-")>30){
+              temp_ab_namen_final<-c(temp_ab_namen_final,ab_relevant)
+            }
+          }
+        }
+        temp_ab_namen_final<-unique(temp_ab_namen_final)
+        temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
+        
+        selectInput('trend2.3',label = "Antimicrobial",choices = c("All",temp_ab_namen_final))
+      }else{
+        selectInput('trend2.3',label = "Antimicrobial",choices = c("Insufficient number of cases"))
+      }
+    })
+    
+    output$trendUI5<-renderUI({actionButton('do_trend',"Start analysis",class = "btn-primary")})
+    
+    output$trendUI6<-renderUI({downloadButton('do_trend_xlsx',"xlsx export")})
+    
+    
+    
+    
+    
+    
+    
 
     observeEvent(input$do_erregerstat,{
       progress <- shiny::Progress$new()
@@ -1113,7 +1311,7 @@ The application is not a medical device according to the Medical Devices Act or 
       #########################################
       ##Statistik
       ########################################
-      shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate resistance statistics Resistenzstatistik","<br>"), add = TRUE) 
+      shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate resistance statistics","<br>"), add = TRUE) 
 
       if(input$statistik3!="All"){##nur ausgewählte Kliniken/Fachbereiche
         input4<-input3[input3$ORD_FACHBEREICH==input$statistik3,]
@@ -1265,7 +1463,7 @@ The application is not a medical device according to the Medical Devices Act or 
       shinyjs::html("text", paste0("<br><br>","Statistical analysis of ",
                                    length(bakterien_update)," species successfully conducted.","<br>"), add = TRUE)  
       shinyjs::html("text", paste0("<br>","Note:"),add=TRUE)
-      shinyjs::html("text",paste0("<br>","For each species, only those antimicrobial agents for which at least 30 observations are available are reported."), add = TRUE)  
+      shinyjs::html("text",paste0("<br>","For each species, only those antimicrobial agents for which at least 30 observations are available."), add = TRUE)  
 
       })
     
@@ -1604,7 +1802,451 @@ The application is not a medical device according to the Medical Devices Act or 
     )
     
     
+    observeEvent(input$do_trend,{
+      progress <- shiny::Progress$new()
+      progress$set(message = "Generate trend analysis", value = 0)
+      
+      helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      years<-unique(format(helper1,"%Y"))
+      
+      shinyjs::html("text", paste0("<br>Trend analysis is launched.<br><br>"), add = FALSE)
+      coxDF<-runBuildModel(input, output)    
+      
+      observe(output$text_zusammenfassung_trend <- renderText(HTML(rv$outputText3)))
+      
+      if(input$trend2=="Insufficient number of cases"){
+        shinyjs::html("text", paste0("<br>Insufficient number of cases for an analysis with the selected configuration (min. 30 cases).<br><br>"), add = TRUE) 
+        output$text_trend2<-renderText({"Insufficient number of cases for an analysis with the selected configuration (min. 30 cases)"})
+        
+        output$plots_trend <- renderUI({
+          plot_trend_output_list <- lapply(1:1, function(k) {
+            plotname_trend <- paste("plot_trend", k, sep="")
+            plotOutput(plotname_trend, height = 1000, width = 1000)
+          })
+          do.call(tagList, plot_trend_output_list)
+        })
+        
+        for(n in 1:1){
+          local({
+            my_i <- n
+            plotname_trend <- paste("plot_trend", my_i, sep="")
+            output[[plotname_trend]] <- renderPlot({NULL})
+          })
+        }
+        
+        progress$close()
+        return()
+        
+      }
+      
+      if(input$trend2!="Insufficient number of cases"){
+        if(input$column4b=="dd.mm.yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        
+        input_filter<-input2
+        if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
+          input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
+          input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
+          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
+        }
+        if(input$trend2.2!="All"&&input$trend3!="All"){
+          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+        }
+        all_years<-format(helper_neu,"%Y")
+        
+        if(length(unique(all_years))==1){
+          shinyjs::html("text", paste0("<br><br>","Data on only one year is available, trend analysis cannot be conducted.","<br>"), add = TRUE)  
+          output$text_trend2<-renderText({"Data on only one year is available, trend analysis cannot be conducted."})
+          return()
+        }
+        
+        if(input$trend2.3=="All"){##Alle möglichen AB
+          temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
+          temp_ab<-temp_ab[temp_ab>0]
+          temp_ab_namen<-names(temp_ab)
+          temp_ab_namen_final<-c()
+          
+          for(ab_relevant in temp_ab_namen){
+            for(year_is in unique(all_years)){
+              temp_ab_test<-input_filter[all_years==year_is,names(input_filter)==ab_relevant]
+              if(sum(temp_ab_test!="-")>30){
+                temp_ab_namen_final<-c(temp_ab_namen_final,ab_relevant)
+              }
+            }
+          }
+          temp_ab_namen_final<-unique(temp_ab_namen_final)
+          temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
+          input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%temp_ab_namen_final))]
+        }
+        if(input$trend2.3!="All"){
+          input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
+          temp_ab_namen_final<-input$trend2.3
+        }
+        
+        output$text_trend2<-renderText({NULL})
+        
+        #########################################
+        ##Statistik
+        ########################################
+        
+        table_anti_bak_all<-list()
+        eintrag_laenge_ab<-c()
+        for(ab in 1:length(temp_ab_namen_final)){
+          progress$inc(1/(length(temp_ab_namen_final)))
+          table_anti_bak<-data.frame(Antibiotikum=rep(temp_ab_namen_final[ab],length(unique(all_years))),N=NA,S=NA,I=NA,R=NA,KI_R=NA,Year=NA)
+          
+          count_years<-1
+          for(is_year in unique(all_years)){
+            table_anti_bak[count_years,3]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="S")
+            table_anti_bak[count_years,4]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="I")
+            table_anti_bak[count_years,5]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="R")
+            table_anti_bak[count_years,7]<-is_year
+            count_years<-count_years+1
+          }
+          table_anti_bak[,2]<-rowSums(table_anti_bak[,3:5])
+          for(j in 1:length(table_anti_bak[,1])){
+            if(table_anti_bak[j,2]>0){
+              stat_help1<-format(round(100*binom.test(x=table_anti_bak[j,5],n=table_anti_bak[j,2],
+                                                      p=table_anti_bak[j,5]/table_anti_bak[j,2])$conf.int[1],1),nsmall=1)
+              stat_help2<-format(round(100*binom.test(x=table_anti_bak[j,5],n=table_anti_bak[j,2],
+                                                      p=table_anti_bak[j,5]/table_anti_bak[j,2])$conf.int[2],1),nsmall=1)
+              table_anti_bak[j,6]<-paste0(stat_help1," - ",stat_help2)          
+            }
+          }
+          
+          table_anti_bak[,3]<-format(round(100*table_anti_bak[,3]/table_anti_bak[,2],1),nsmall=1)
+          table_anti_bak[,4]<-format(round(100*table_anti_bak[,4]/table_anti_bak[,2],1),nsmall=1)
+          table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
+          
+          table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
+          names(table_anti_bak)<-c("Antimicrobial","N","S %","I %","R %","95% KI R","Year")
+          
+          table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
+          eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
+          table_anti_bak_all[[ab]]<-table_anti_bak
+        }
+        
+        output$plots_trend <- renderUI({
+          plot_trend_output_list <- lapply(1:length(temp_ab_namen_final), function(k) {
+            plotname_trend <- paste("plot_trend", k, sep="")
+            plotOutput(plotname_trend, height = 400, width = 1000)
+          })
+          do.call(tagList, plot_trend_output_list)
+        })
+        
+        for(n in 1:length(temp_ab_namen_final)){
+          local({
+            my_i <- n
+            plotname_trend <- paste("plot_trend", my_i, sep="")
+            output[[plotname_trend]] <- renderPlot({
+              help_bar<-table_anti_bak_all[[which(temp_ab_namen_final[my_i]==temp_ab_namen_final)]]
+              
+              par(mar=c(4,14,6,1))
+              plot(NULL,xlab="",ylab="",xaxt="n",yaxt="n",main="",bty="n",
+                   xlim=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),ylim=c(0,100),cex.lab=2,xaxs="i")
+              axis(1,at=seq(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),
+                   labels=c(NA,seq(min(as.numeric(all_years)),max(as.numeric(all_years))),NA),cex.axis=1.5,tick = F)
+              axis(2,at=seq(0,100,20),las=2,cex.axis=1.5)
+              for(n in seq(0,100,10)){
+                points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(n,n),col="grey90",lwd=1,type="l",lty=5)
+              }
+              points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(0,0),col="grey90",lwd=3,type="l",lty=1)
+              points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(100,100),col="grey90",lwd=3,type="l",lty=1)
+              for(m in 1:length(help_bar[,1])){
+                start<-as.numeric(strsplit(help_bar[m,6],split = " - ")[[1]][1])
+                end<-as.numeric(strsplit(help_bar[m,6],split = " - ")[[1]][2])
+                points(x=c(as.numeric(help_bar$Year[m]),as.numeric(help_bar$Year[m])),y=c(start,end),type="l",lwd=2)
+                points(x=c(as.numeric(help_bar$Year[m])-0.02,as.numeric(help_bar$Year[m])+0.02),y=c(start,start),type="l",lwd=3)
+                points(x=c(as.numeric(help_bar$Year[m])-0.02,as.numeric(help_bar$Year[m])+0.02),y=c(end,end),type="l",lwd=3)
+              }
+              points(x=help_bar$Year,y=help_bar$`R %`,cex=3,type="l",lwd=5)
+              points(x=help_bar$Year,y=help_bar$`R %`,cex=2,pch=21,type="p",lwd=3,bg="darkgoldenrod2",col="darkgoldenrod4")
+              
+              title("R %    95% KI R",line = 0.3)
+              mtext(help_bar$Antimicrobial[1],adj=-0.17,cex=1.5,col=rgb(49/255,126/255,172/255),line=2)
+            })
+          })
+        }
+        
+        shinyjs::html("text", paste0("<br><br>","Trend analysis successfully conducted.","<br>"), add = TRUE)  
+        shinyjs::html("text", paste0("<br>","Note:"),add=TRUE)
+        shinyjs::html("text",paste0("<br>","For each antimicrobial, only those years are reported for which at least 30 observations are available."), add = TRUE)  
+        output$hinweis_tabellen_trend<-renderText({"For each antimicrobial, only those years are reported for which at least 30 observations are available."})
+        
+        progress$close()
+        return()
+      }
+    })
     
+    
+    output$do_trend_xlsx <- downloadHandler(
+      filename = function() {
+        paste0("GEFAAR_Trend_Analysis_Specimen_",input$trend2.2,"_Species_",input$trend2,"_Clinic_",input$trend3,"_Antimicrobial_",input$trend2.3,".xlsx")
+        #"Test.xlsx"
+      },
+      content = function(file) {
+        progress <- shiny::Progress$new()
+        progress$set(message = "Preparing data for xlsx report", value = 0)
+        
+        helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        years<-unique(format(helper1,"%Y"))
+        
+        shinyjs::html("text", paste0("<br>Analysis is launched.<br><br>"), add = FALSE)
+        
+        #########################
+        ###Eigentliche Analyse###
+        #########################
+        
+        if(input$trend2=="Insufficient number of cases"){
+          shinyjs::html("text", paste0("<br>Insufficient number of cases for an analysis with the selected configuration (min. 30 cases).<br><br>"), add = TRUE) 
+          output$text_trend2<-renderText({"Insufficient number of cases for an analysis with the selected configuration (min. 30 cases)"})
+          
+          progress$close()
+          return()
+        }
+        
+        if(input$trend2!="Insufficient number of cases"){
+          if(input$column4b=="dd.mm.yy"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+          }
+          if(input$column4b=="dd.mm.yyyy"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+          }
+          if(input$column4b=="mm/dd/yy"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+          }
+          if(input$column4b=="mm/dd/yyyy"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+          }
+          if(input$column4b=="yy-mm-dd"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+          }
+          if(input$column4b=="yyyy-mm-dd"){
+            helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+          }
+          
+          input_filter<-input2
+          if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
+            input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
+            helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
+          }
+          if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
+            input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+            helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+          }
+          if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
+            input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
+            helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
+          }
+          if(input$trend2.2!="All"&&input$trend3!="All"){
+            input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
+            helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
+          }
+          all_years<-format(helper_neu,"%Y")
+          
+          if(input$trend2.3=="All"){##Alle möglichen AB
+            temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
+            temp_ab<-temp_ab[temp_ab>0]
+            temp_ab_namen<-names(temp_ab)
+            temp_ab_namen_final<-c()
+            
+            for(ab_relevant in temp_ab_namen){
+              for(year_is in unique(all_years)){
+                temp_ab_test<-input_filter[all_years==year_is,names(input_filter)==ab_relevant]
+                if(sum(temp_ab_test!="-")>30){
+                  temp_ab_namen_final<-c(temp_ab_namen_final,ab_relevant)
+                }
+              }
+            }
+            temp_ab_namen_final<-unique(temp_ab_namen_final)
+            temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
+            input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%temp_ab_namen_final))]
+          }
+          if(input$trend2.3!="All"){
+            input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
+            temp_ab_namen_final<-input$trend2.3
+          }
+          
+          #########################################
+          ##Statistik
+          ########################################
+          
+          table_anti_bak_all<-list()
+          eintrag_laenge_ab<-c()
+          for(ab in 1:length(temp_ab_namen_final)){
+            progress$inc(1/(length(temp_ab_namen_final)))
+            table_anti_bak<-data.frame(Antibiotikum=rep(temp_ab_namen_final[ab],length(unique(all_years))),N=NA,S=NA,I=NA,R=NA,KI_R=NA,Year=NA)
+            
+            count_years<-1
+            for(is_year in unique(all_years)){
+              table_anti_bak[count_years,3]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="S")
+              table_anti_bak[count_years,4]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="I")
+              table_anti_bak[count_years,5]<-sum(input_filter[is_year==all_years,names(input_filter)==temp_ab_namen_final[ab]]=="R")
+              table_anti_bak[count_years,7]<-is_year
+              count_years<-count_years+1
+            }
+            table_anti_bak[,2]<-rowSums(table_anti_bak[,3:5])
+            for(j in 1:length(table_anti_bak[,1])){
+              if(table_anti_bak[j,2]>0){
+                stat_help1<-format(round(100*binom.test(x=table_anti_bak[j,5],n=table_anti_bak[j,2],
+                                                        p=table_anti_bak[j,5]/table_anti_bak[j,2])$conf.int[1],1),nsmall=1)
+                stat_help2<-format(round(100*binom.test(x=table_anti_bak[j,5],n=table_anti_bak[j,2],
+                                                        p=table_anti_bak[j,5]/table_anti_bak[j,2])$conf.int[2],1),nsmall=1)
+                table_anti_bak[j,6]<-paste0(stat_help1," - ",stat_help2)          
+              }
+            }
+            
+            table_anti_bak[,3]<-format(round(100*table_anti_bak[,3]/table_anti_bak[,2],1),nsmall=1)
+            table_anti_bak[,4]<-format(round(100*table_anti_bak[,4]/table_anti_bak[,2],1),nsmall=1)
+            table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
+            
+            table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
+            names(table_anti_bak)<-c("Antimicrobial","N","S %","I %","R %","95% KI R","Year")
+            
+            table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
+            eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
+            table_anti_bak_all[[ab]]<-table_anti_bak
+          }
+          
+          progress$close()
+          
+          progress <- shiny::Progress$new()
+          progress$set(message = "Writing data to xlsx report", value = 0)
+          
+          wb<-createWorkbook()
+          addWorksheet(wb,sheetName = "Trend")
+          
+          all_white<-createStyle(fgFill="white")
+          bold<-createStyle(textDecoration = "bold")
+          size<-createStyle(fontSize = 10)
+          size_big<-createStyle(fontSize = 14)
+          linie<-createStyle(border = "bottom",borderColour = "grey85")
+          #linie2<-createStyle(border = "bottom",borderStyle = "medium")
+          #linie3<-createStyle(border = "bottom",borderStyle = "medium",borderColour = "grey85")
+          #right<-createStyle(halign = "right")
+          #hintergrund_grau<-createStyle(fgFill="grey90")
+          ueberschrift<-createStyle(fontColour = "white",fgFill = rgb(42/255,77/255,125/255),
+                                    fontSize = 14,textDecoration = "bold",valign = "center")
+          
+          addStyle(wb,sheet="Trend",rows=c(1:5000),cols=1:27,
+                   gridExpand = T,style=all_white)
+          
+          insertImage(wb,sheet="Trend",file = "www/IMI.png",
+                      height = 0.516, width = 0.648,
+                      startRow = 1,startCol = 7)
+          insertImage(wb,sheet="Trend",file = "www/UKM.png",
+                      height = 0.516, width = 0.6,
+                      startRow = 1,startCol = 1)
+          setRowHeights(wb,sheet="Trend",rows = 1,heights = 43)
+          
+          
+          table_export<-data.frame(V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,V6=NA,V7=NA)
+          table_export[2,1]<-"Trend analysis"
+          table_export[3,1]<-"Specimen"
+          table_export[3,2]<-input$trend2.2
+          table_export[4,1]<-"Clinic"
+          table_export[4,2]<-input$trend3
+          table_export[5,1]<-"Species"
+          table_export[5,2]<-input$trend2 
+          table_export[6,1]<-"Antimicrobial"
+          table_export[6,2]<-input$trend2.3
+          
+          writeData(wb,sheet="Trend",table_export,colNames = F,rowNames = F)
+          
+          addStyle(wb,sheet="Trend",rows=c(1:3600),cols=1:27,gridExpand = T,style=all_white)
+          addStyle(wb,sheet="Trend",rows=2,cols=1:7,style = ueberschrift,stack=T)
+          addStyle(wb,sheet="Trend",rows=c(3:6),cols=1,style = bold,stack=T)
+          addStyle(wb,sheet="Trend",rows=c(6),cols=1:7,style = linie,
+                   gridExpand = T, stack=T)
+          
+          setColWidths(wb,sheet="Trend",cols = c(1:5),widths = "auto")
+          setRowHeights(wb,sheet="Trend",rows = c(2,7),heights = 30)
+          
+          
+          ##############################################
+          begin<-8
+          export_abbildungen<-data.frame(V1=NA)
+          add_height<-0
+          for(ab in (1:length(temp_ab_namen_final))){
+            export_abbildungen[add_height+1,1]<-temp_ab_namen_final[ab]
+            add_height<-add_height+(40/7.8)*(7.8/1000*400)
+          }
+          
+          writeData(wb,sheet="Trend",export_abbildungen,colNames = F,rowNames = F,startRow = begin)
+          addStyle(wb,sheet="Trend",cols=c(1),rows=begin:(length(export_abbildungen[,1])+begin),style=bold,stack=T)
+          addStyle(wb,sheet="Trend",cols=c(1),rows=begin:(length(export_abbildungen[,1])+begin),style=size_big,stack=T)
+          
+          
+          
+          add_height<-0
+          for(ab in 1:length(temp_ab_namen_final)){
+            progress$inc(1/(length(temp_ab_namen_final)),detail=paste0(ab,"/",length(temp_ab_namen_final)))
+            
+            help_bar<-table_anti_bak_all[[which(temp_ab_namen_final[ab]==temp_ab_namen_final)]]
+            
+            png(paste0(tempdir(), "/", "plot",ab,".png"), width=1000, height=400,units = "px")
+            par(mar=c(5,5,2,1))
+            plot(NULL,xlab="",ylab="",xaxt="n",yaxt="n",main="",bty="n",
+                 xlim=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),ylim=c(0,100),cex.lab=2,xaxs="i")
+            axis(1,at=seq(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),
+                 labels=c(NA,seq(min(as.numeric(all_years)),max(as.numeric(all_years))),NA),cex.axis=1.5,tick = F)
+            axis(2,at=seq(0,100,20),las=2,cex.axis=1.5)
+            for(n in seq(0,100,10)){
+              points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(n,n),col="grey90",lwd=1,type="l",lty=5)
+            }
+            points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(0,0),col="grey90",lwd=3,type="l",lty=1)
+            points(x=c(min(as.numeric(all_years))-1,max(as.numeric(all_years))+1),y=c(100,100),col="grey90",lwd=3,type="l",lty=1)
+            for(m in 1:length(help_bar[,1])){
+              start<-as.numeric(strsplit(help_bar[m,6],split = " - ")[[1]][1])
+              end<-as.numeric(strsplit(help_bar[m,6],split = " - ")[[1]][2])
+              points(x=c(as.numeric(help_bar$Year[m]),as.numeric(help_bar$Year[m])),y=c(start,end),type="l",lwd=2)
+              points(x=c(as.numeric(help_bar$Year[m])-0.02,as.numeric(help_bar$Year[m])+0.02),y=c(start,start),type="l",lwd=3)
+              points(x=c(as.numeric(help_bar$Year[m])-0.02,as.numeric(help_bar$Year[m])+0.02),y=c(end,end),type="l",lwd=3)
+            }
+            points(x=help_bar$Year,y=help_bar$`R %`,cex=3,type="l",lwd=5)
+            points(x=help_bar$Year,y=help_bar$`R %`,cex=2,pch=21,type="p",lwd=3,bg="darkgoldenrod2",col="darkgoldenrod4")
+            
+            title("R %    95% KI R",line = 0.3,cex=1.5)
+            dev.off()
+            
+            insertImage(wb, sheet="Trend", paste0(tempdir(), "/", "plot",ab,".png"), width = 8,height = 7.8/1000*400,
+                        startRow = begin+1+add_height,startCol = 1)
+            
+            add_height<-add_height+(40/7.8)*(7.8/1000*400)
+          }
+          
+          saveWorkbook(wb,file = file,overwrite=T)
+          
+          progress$close()
+          shinyjs::html("text", paste0("<br><br>","xlsx report successfully generated.","<br>"), add = TRUE) 
+        }
+      } 
+      
+    )
 
     
     observeEvent(input$do_analyse,{
@@ -1655,9 +2297,9 @@ The application is not a medical device according to the Medical Devices Act or 
       }
       
       if(input$analysis_type1b=="All"){
-        input3<-input2[format(helper1bakterien,"%Y")==input$analysis_type1a,]
+        input3<-input2[format(helper1cluster,"%Y")==input$analysis_type1a,]
       }else{
-        input3<-input2[format(helper1bakterien,"%Y")==input$analysis_type1a&input2$ORD_MATERIAL==input$analysis_type1b,]
+        input3<-input2[format(helper1cluster,"%Y")==input$analysis_type1a&input2$ORD_MATERIAL==input$analysis_type1b,]
       }
       erstes_ab<-length(grep("_",names(input3)))+1
 
@@ -3145,9 +3787,9 @@ The application is not a medical device according to the Medical Devices Act or 
       }
       
       if(input$download_analysis_type1b=="All"){
-        input3<-input2[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a,]
+        input3<-input2[format(download_helper1cluster,"%Y")==input$download_analysis_type1a,]
       }else{
-        input3<-input2[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b,]
+        input3<-input2[format(download_helper1cluster,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b,]
       }
       erstes_ab<-length(grep("_",names(input3)))+1
 
