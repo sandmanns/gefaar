@@ -916,8 +916,8 @@ The application is not a medical device according to the Medical Devices Act or 
           for(i in 2:length(table_fach_bak[1,])){
             table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
           }
-          table_fach_bak$Summe<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
-          table_fach_bak<-table_fach_bak[order(table_fach_bak$Summe,decreasing = T),]
+          table_fach_bak$Sum<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
+          table_fach_bak<-table_fach_bak[order(table_fach_bak$Sum,decreasing = T),]
           table_fach_bak_colsums<-c()
           for(z in 2:length(table_fach_bak[1,])){
             table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
@@ -941,7 +941,7 @@ The application is not a medical device according to the Medical Devices Act or 
                                                                          columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
                                                              server=F)
           }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak$Summe>=30,]
+            table_fach_bak<-table_fach_bak[table_fach_bak$Sum>=30,]
             table_fach_bak_backup<-table_fach_bak
             for(z in 1:length(table_fach_bak_colsums)){
               table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
@@ -1021,11 +1021,11 @@ The application is not a medical device according to the Medical Devices Act or 
           for(i in 2:length(table_fach_bak[1,])){
             table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
           }
-          table_fach_bak$Summe<-0
+          table_fach_bak$Sum<-0
           for(z in 1:length(table_fach_bak[,1])){
-            table_fach_bak$Summe[z]<-sum(table_fach_bak[z,c(2:length(table_fach_bak[1,]))])
+            table_fach_bak$Sum[z]<-sum(table_fach_bak[z,c(2:length(table_fach_bak[1,]))])
           }
-          table_fach_bak<-table_fach_bak[order(table_fach_bak$Summe,decreasing = T),]
+          table_fach_bak<-table_fach_bak[order(table_fach_bak$Sum,decreasing = T),]
           table_fach_bak_colsums<-c()
           for(z in 2:length(table_fach_bak[1,])){
             table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
@@ -1051,7 +1051,7 @@ The application is not a medical device according to the Medical Devices Act or 
                                                            server=F
           )
           }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak$Summe>=30,]
+            table_fach_bak<-table_fach_bak[table_fach_bak$Sum>=30,]
             table_fach_bak_backup<-table_fach_bak
             for(z in 1:length(table_fach_bak_colsums)){
               table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
@@ -1272,7 +1272,7 @@ The application is not a medical device according to the Medical Devices Act or 
         for(i in 2:length(table_fach_bak[1,])){
           table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
         }
-        table_fach_bak$Summe<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
+        table_fach_bak$Sum<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
         helper<-table_fach_bak[1,]
         helper[1,1]<-"Sum"
         helper[1,2:length(helper[1,])]<-colSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
@@ -1300,7 +1300,7 @@ The application is not a medical device according to the Medical Devices Act or 
           }
         }
         
-        table_anti_bak$Summe<-rowSums(table_anti_bak[,c(2:length(table_anti_bak[1,]))])
+        table_anti_bak$Sum<-rowSums(table_anti_bak[,c(2:length(table_anti_bak[1,]))])
         helper<-table_anti_bak[1,]
         helper[1,1]<-"Sum"
         helper[1,2:length(helper[1,])]<-colSums(table_anti_bak[,c(2:length(table_anti_bak[1,]))])
