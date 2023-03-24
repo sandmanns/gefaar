@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 21.03.2023"})
+  output$text_info2g<-renderText({"Latest update: 24.03.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -832,9 +832,9 @@ The application is not a medical device according to the Medical Devices Act or 
         temp_ab_namen_final<-unique(temp_ab_namen_final)
         temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
         
-        selectInput('trend2.3',label = "Antimicrobial",choices = c("All",temp_ab_namen_final))
+        selectInput('trend2.3',label = "Antimicrobial agent",choices = c("All",temp_ab_namen_final))
       }else{
-        selectInput('trend2.3',label = "Antimicrobial",choices = c("Insufficient number of cases"))
+        selectInput('trend2.3',label = "Antimicrobial agent",choices = c("Insufficient number of cases"))
       }
     })
     
@@ -1371,7 +1371,7 @@ The application is not a medical device according to the Medical Devices Act or 
         
         
         table_fb_anti_bak<-table_fb_anti_bak[!is.na(table_fb_anti_bak[,6]),]
-        names(table_fb_anti_bak)<-c("Antimicrobial","N","S %","I %","R %","95% CI R")
+        names(table_fb_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% CI R")
         
         table_fb_anti_bak<-table_fb_anti_bak[table_fb_anti_bak$N>=30,]
         table_fb_anti_bak<-table_fb_anti_bak[order(table_fb_anti_bak[,1],decreasing = F),]
@@ -1463,7 +1463,7 @@ The application is not a medical device according to the Medical Devices Act or 
       shinyjs::html("text", paste0("<br><br>","Statistical analysis of ",
                                    length(bakterien_update)," species successfully conducted.","<br>"), add = TRUE)  
       shinyjs::html("text", paste0("<br>","Note:"),add=TRUE)
-      shinyjs::html("text",paste0("<br>","For each species, only those antimicrobial agents for which at least 30 observations are available."), add = TRUE)  
+      shinyjs::html("text",paste0("<br>","For each species, only those antimicrobial agents are analyzed for which at least 30 observations are available."), add = TRUE)  
 
       })
     
@@ -1637,12 +1637,12 @@ The application is not a medical device according to the Medical Devices Act or 
         table_export[2,1]<-"Resistance statistics"
         table_export[3,1]<-"Year"
         table_export[3,2]<-input$statistik1
-        table_export[4,1]<-"Species"
-        table_export[4,2]<-input$statistik2
-        table_export[5,1]<-"Specimen"
-        table_export[5,2]<-input$statistik2.2
-        table_export[6,1]<-"Clinic"
-        table_export[6,2]<-input$statistik3
+        table_export[4,1]<-"Specimen"
+        table_export[4,2]<-input$statistik2.2
+        table_export[5,1]<-"Clinic"
+        table_export[5,2]<-input$statistik3
+        table_export[6,1]<-"Species"
+        table_export[6,2]<-input$statistik2
         
         insertImage(wb,sheet="Data sheet antimicrobial agents",file = "www/IMI.png",
                     height = 0.516, width = 0.648,
@@ -1943,7 +1943,7 @@ The application is not a medical device according to the Medical Devices Act or 
           table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
           
           table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
-          names(table_anti_bak)<-c("Antimicrobial","N","S %","I %","R %","95% KI R","Year")
+          names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% KI R","Year")
           
           table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
           eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
@@ -2125,7 +2125,7 @@ The application is not a medical device according to the Medical Devices Act or 
             table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
             
             table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
-            names(table_anti_bak)<-c("Antimicrobial","N","S %","I %","R %","95% KI R","Year")
+            names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% KI R","Year")
             
             table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
             eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
@@ -2172,7 +2172,7 @@ The application is not a medical device according to the Medical Devices Act or 
           table_export[4,2]<-input$trend3
           table_export[5,1]<-"Species"
           table_export[5,2]<-input$trend2 
-          table_export[6,1]<-"Antimicrobial"
+          table_export[6,1]<-"Antimicrobial agent"
           table_export[6,2]<-input$trend2.3
           
           writeData(wb,sheet="Trend",table_export,colNames = F,rowNames = F)

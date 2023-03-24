@@ -8,7 +8,7 @@ shinyUI(fluidPage(
                  img(height = 43, width = 54, src = "IMI.png",class="pull-right"),
                  img(height = 43, width = 20, src = "white.png",class="pull-right"),
                  img(height = 43, width = 50, src = "UKM.png",class="pull-right")),
-                 windowTitle="UKM Resistance analysis"
+                 windowTitle="GEFAAR"
   ),
   sidebarPanel(
     shinyjs::useShinyjs(),
