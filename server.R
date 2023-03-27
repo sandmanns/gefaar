@@ -2422,7 +2422,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots2 <- renderUI({
             plot_output_list2 <- lapply(1:length(bakterien), function(k) {
-              plotname2 <- paste("plot2", k, sep="")
+              plotname2 <- paste("plot2_", k, sep="")
               plotOutput(plotname2, height = 400, width = 1250)
             })
             do.call(tagList, plot_output_list2)
@@ -2500,7 +2500,7 @@ The application is not a medical device according to the Medical Devices Act or 
               output$text_analyse2<-renderText({NULL})
               
               my_i <- i
-              plotname2 <- paste("plot2", my_i, sep="")
+              plotname2 <- paste("plot2_", my_i, sep="")
               
               output[[plotname2]] <- renderPlot({
                 einmalig<-unique(as.vector(as.matrix(temp3_2)))
@@ -2530,7 +2530,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots3 <- renderUI({
             plot_output_list3 <- lapply(1:length(bakterien), function(k) {
-              plotname3 <- paste("plot3", k, sep="")
+              plotname3 <- paste("plot3_", k, sep="")
               plotOutput(plotname3, height = 400, width = 1250)
             })
             do.call(tagList, plot_output_list3)
@@ -2611,7 +2611,7 @@ The application is not a medical device according to the Medical Devices Act or 
               }
 
               my_i <- i
-              plotname3 <- paste("plot3", my_i, sep="")
+              plotname3 <- paste("plot3_", my_i, sep="")
               
               output[[plotname3]] <- renderPlot({
                 einmalig<-unique(as.vector(as.matrix(temp3_2)))
@@ -2658,7 +2658,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots4 <- renderUI({
             plot_output_list4 <- lapply(1:length(bakterien), function(k) {
-              plotname4 <- paste("plot4", k, sep="")
+              plotname4 <- paste("plot4_", k, sep="")
               plotOutput(plotname4, height = 400, width = 1250)
             })
             do.call(tagList, plot_output_list4)
@@ -2673,6 +2673,8 @@ The application is not a medical device according to the Medical Devices Act or 
               temp<-input3[input3$RES_ERREGER==bakterien[i],]
               helper<-colSums(temp=="-")
               temp2<-temp[,helper!=length(temp[,1])]
+              
+              shinyjs::html("text", paste0(" (",length(temp[,1]),"x",length(temp[1,]),"=",length(temp[,1])*length(temp[1,])," elements)"), add = TRUE)
               
               for(j in length(temp2[1,]):erstes_ab){
                 temp2[,j]<-ordered(temp2[,j],c("R","I","S","-"))
@@ -2721,7 +2723,7 @@ The application is not a medical device according to the Medical Devices Act or 
               
               
               my_i <- i
-              plotname4 <- paste("plot4", my_i, sep="")
+              plotname4 <- paste("plot4_", my_i, sep="")
               
               output[[plotname4]] <- renderPlot({
                 abc=data.frame(x=1)
@@ -2741,7 +2743,7 @@ The application is not a medical device according to the Medical Devices Act or 
               })
               }else{
                 my_i <- i
-                plotname4 <- paste("plot4", my_i, sep="")
+                plotname4 <- paste("plot4_", my_i, sep="")
                 
                 output[[plotname4]] <- renderPlot({
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -2860,12 +2862,12 @@ The application is not a medical device according to the Medical Devices Act or 
                 
                 beste<-table(c(clusters1$Best.nc[1],clusters4$Best.nc[1],clusters3$Best.nc[1],clusters5$Best.nc[1],clusters6$Best.nc[1]))
                 
-                message("Clusters1: ",clusters1)
-                message("Clusters2: ",clusters2)
-                message("Clusters3: ",clusters3)
-                message("Clusters4: ",clusters4)
-                message("Clusters5: ",clusters5)
-                message("Clusters6: ",clusters6)
+                #message("Clusters1: ",clusters1)
+                #message("Clusters2: ",clusters2)
+                #message("Clusters3: ",clusters3)
+                #message("Clusters4: ",clusters4)
+                #message("Clusters5: ",clusters5)
+                #message("Clusters6: ",clusters6)
                 
                 if(beste[max(beste)==beste]>=2&&
                    sd(clusters1$All.index)>=5&&sd(clusters2$All.index)>=0.05){
@@ -2992,7 +2994,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse5b<-renderText({"Note: In case all species are analyzed at once, it may take up to 2 minutes until the updated plots are displayed. werden."})
                 
                 my_i <- i
-                plotname5 <- paste("plot5", my_i, sep="")
+                plotname5 <- paste("plot5_", my_i, sep="")
 
                 output[[plotname5]] <- renderPlot({
                   if(moeglich>0){
@@ -3019,7 +3021,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse5b<-renderText({"Note: In case all species are analyzed at once, it may take up to 2 minutes until the updated plots are displayed."})
                 
                 my_i <- i
-                plotname5 <- paste("plot5", my_i, sep="")
+                plotname5 <- paste("plot5_", my_i, sep="")
                 
                 output[[plotname5]] <- renderPlot({
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -3031,7 +3033,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse5b<-renderText({"Note: At the first call, it may take up to 60 seconds until the plots are displayed."})
                 
                 my_i <- i
-                plotname5 <- paste("plot5", my_i, sep="")
+                plotname5 <- paste("plot5_", my_i, sep="")
                 
                 output[[plotname5]] <- renderPlot({
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -3059,7 +3061,7 @@ The application is not a medical device according to the Medical Devices Act or 
 
           output$plots6 <- renderUI({
             plot_output_list6 <- lapply(1:length(bakterien), function(k) {
-              plotname6 <- paste("plot6", k, sep="")
+              plotname6 <- paste("plot6_", k, sep="")
               plotOutput(plotname6, height = 410, width = 1250)
             })
             do.call(tagList, plot_output_list6)
@@ -3128,7 +3130,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse6<-renderText({NULL})
                 
                 my_i <- i
-                plotname6 <- paste("plot6", my_i, sep="")
+                plotname6 <- paste("plot6_", my_i, sep="")
                 
                 output[[plotname6]] <- renderPlot({
                   if(moeglich>0){
@@ -3190,7 +3192,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse6<-renderText({NULL})
                 
                 my_i <- i
-                plotname6 <- paste("plot6", my_i, sep="")
+                plotname6 <- paste("plot6_", my_i, sep="")
                 
                 output[[plotname6]] <- renderPlot({
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -3201,7 +3203,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 output$text_analyse6<-renderText({NULL})
                 
                 my_i <- i
-                plotname6 <- paste("plot6", my_i, sep="")
+                plotname6 <- paste("plot6_", my_i, sep="")
                 
                 output[[plotname6]] <- renderPlot({
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -3440,11 +3442,11 @@ The application is not a medical device according to the Medical Devices Act or 
             names(helper)<-temp2$RES_ERREGER
             
             ann_colors = list(
-              Spezies=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
+              Species=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
             )
-            names(ann_colors$Spezies)<-levels(as.factor(temp2$RES_ERREGER))
+            names(ann_colors$Species)<-levels(as.factor(temp2$RES_ERREGER))
             
-            my_annot<-data.frame(Spezies=temp2$RES_ERREGER)
+            my_annot<-data.frame(Species=temp2$RES_ERREGER)
             row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
             
             fachbereiche<-as.numeric(table(temp2$RES_ERREGER))
@@ -3464,7 +3466,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots7 <- renderUI({
             plot_output_list7 <- lapply(1:length(fachbereich), function(k) {
-              plotname7 <- paste("plot7", k, sep="")
+              plotname7 <- paste("plot7_", k, sep="")
               plotOutput(plotname7, height = hoehen[k], width = weiten[k])
             })
             do.call(tagList, plot_output_list7)
@@ -3507,12 +3509,19 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$RES_ERREGER
               
               ann_colors = list(
-                Spezies=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
+                Species=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
               )
-              names(ann_colors$Spezies)<-levels(as.factor(temp2$RES_ERREGER))
+              names(ann_colors$Species)<-levels(as.factor(temp2$RES_ERREGER))
               
-              my_annot<-data.frame(Spezies=temp2$RES_ERREGER)
+              my_annot<-data.frame(Species=temp2$RES_ERREGER)
               row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
+              
+              backup_rownames<-rownames(my_annot)[rownames(my_annot)%in%rownames(temp3_2)]
+              my_annot<-as.data.frame(my_annot[rownames(my_annot)%in%rownames(temp3_2),])
+              rownames(my_annot)<-backup_rownames
+              names(my_annot)<-"Species"
+              ann_colors$Species<-ann_colors$Species[names(ann_colors$Species)%in%unique(my_annot[,1])]
+              
               
               fachbereiche<-as.numeric(table(temp2$RES_ERREGER))
               fachbereiche2<-c()
@@ -3524,7 +3533,7 @@ The application is not a medical device according to the Medical Devices Act or 
               
               
               my_i <- i
-              plotname7 <- paste("plot7", my_i, sep="")
+              plotname7 <- paste("plot7_", my_i, sep="")
               
               output[[plotname7]] <- renderPlot({
                 if(length(temp3_2[,1])>1){
@@ -3594,7 +3603,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots8 <- renderUI({
             plot_output_list8 <- lapply(1:length(fachbereich), function(k) {
-              plotname8 <- paste("plot8", k, sep="")
+              plotname8 <- paste("plot8_", k, sep="")
               plotOutput(plotname8, height = hoehen[k], width = weiten[k])
             })
             do.call(tagList, plot_output_list8)
@@ -3635,13 +3644,12 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$RES_ERREGER
               
               ann_colors = list(
-                Spezies=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
+                Species=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
               )
-              names(ann_colors$Spezies)<-levels(as.factor(temp2$RES_ERREGER))
+              names(ann_colors$Species)<-levels(as.factor(temp2$RES_ERREGER))
               
-              my_annot<-data.frame(Spezies=temp2$RES_ERREGER)
+              my_annot<-data.frame(Species=temp2$RES_ERREGER)
               row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
-              
               
               missing<-colSums(!is.na(temp3))/length(temp3[,1])
               temp3_2missing<-as.data.frame(temp3[,missing>0.8])
@@ -3661,7 +3669,7 @@ The application is not a medical device according to the Medical Devices Act or 
               output$text_analyse8<-renderText({NULL})
               
               my_i <- i
-              plotname8 <- paste("plot8", my_i, sep="")
+              plotname8 <- paste("plot8_", my_i, sep="")
               
               output[[plotname8]] <- renderPlot({
                 if(length(temp3_2[,1])>1&&beste!=1){
@@ -4119,6 +4127,8 @@ The application is not a medical device according to the Medical Devices Act or 
               helper<-colSums(temp=="-")
               temp2<-temp[,helper!=length(temp[,1])]
               
+              shinyjs::html("text", paste0(" (",length(temp[,1]),"x",length(temp[1,]),"=",length(temp[,1])*length(temp[1,])," elements)"), add = TRUE)
+              
               for(j in length(temp2[1,]):erstes_ab){
                 temp2[,j]<-ordered(temp2[,j],c("R","I","S","-"))
                 temp2<-temp2[order(temp2[,j]),]
@@ -4218,6 +4228,8 @@ The application is not a medical device according to the Medical Devices Act or 
               temp<-input3[input3$RES_ERREGER==download_bakterien[i],]
               helper<-colSums(temp=="-")
               temp2<-temp[,helper!=length(temp[,1])]
+              
+              shinyjs::html("text", paste0(" (",length(temp[,1]),"x",length(temp[1,]),"=",length(temp[,1])*length(temp[1,])," elements)"), add = TRUE)
               
               for(j in length(temp2[1,]):erstes_ab){
                 temp2[,j]<-ordered(temp2[,j],c("R","I","S","-"))
@@ -4696,11 +4708,11 @@ The application is not a medical device according to the Medical Devices Act or 
             names(helper)<-temp2$RES_ERREGER
             
             ann_colors = list(
-              Spezies=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
+              Species=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
             )
-            names(ann_colors$Spezies)<-levels(as.factor(temp2$RES_ERREGER))
+            names(ann_colors$Species)<-levels(as.factor(temp2$RES_ERREGER))
             
-            my_annot<-data.frame(Spezies=temp2$RES_ERREGER)
+            my_annot<-data.frame(Species=temp2$RES_ERREGER)
             row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
             
             fachbereiche<-as.numeric(table(temp2$RES_ERREGER))
@@ -4778,13 +4790,12 @@ The application is not a medical device according to the Medical Devices Act or 
             names(helper)<-temp2$RES_ERREGER
             
             ann_colors = list(
-              Spezies=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
+              Species=farben[names(farben)%in%levels(as.factor(temp2$RES_ERREGER))]
             )
-            names(ann_colors$Spezies)<-levels(as.factor(temp2$RES_ERREGER))
+            names(ann_colors$Species)<-levels(as.factor(temp2$RES_ERREGER))
             
-            my_annot<-data.frame(Spezies=temp2$RES_ERREGER)
+            my_annot<-data.frame(Species=temp2$RES_ERREGER)
             row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
-            
             
             missing<-colSums(!is.na(temp3))/length(temp3[,1])
             temp3_2missing<-as.data.frame(temp3[,missing>0.8])
@@ -4802,6 +4813,15 @@ The application is not a medical device according to the Medical Devices Act or 
             })
             
             if(length(temp3_2[,1])>1&&beste!=1){
+              abc=data.frame(x=1)
+              data<-lapply(abc,function(x){
+                tryCatch({test_plot<-pheatmap(t(as.matrix(temp3_2)),legend_labels = c("S","I","R")[einmalig],legend_breaks=c(1,1.5,2)[einmalig],
+                                   main=download_fachbereich[i],annotation_col =my_annot,breaks=ifelse(length(einmalig)!=1,NA,c(0,3)),
+                                   cluster_rows = F,cluster_cols = T,show_colnames = F,annotation_colors=ann_colors,
+                                   clustering_method = "ward.D",fontsize = min(9,floor(270/length(ann_colors$Spezies))), fontsize_col = 5,cutree_cols = beste,silent = T)
+                },error=function(e) NULL)
+              })
+              if(!is.null(data[[1]])){
                 einmalig<-unique(as.vector(as.matrix(temp3_2)))
                 einmalig<-einmalig[!is.na(einmalig)]
                 einmalig<-einmalig*2-1
@@ -4810,7 +4830,11 @@ The application is not a medical device according to the Medical Devices Act or 
                          main=download_fachbereich[i],annotation_col =my_annot,breaks=ifelse(length(einmalig)!=1,NA,c(0,3)),
                          cluster_rows = F,cluster_cols = T,show_colnames = F,annotation_colors=ann_colors,
                          clustering_method = "ward.D",fontsize = min(9,floor(270/length(ann_colors$Spezies))), fontsize_col = 5,cutree_cols = beste))
-
+              }else{
+                #dev.off()
+                print(plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
+                           yaxt="n",bty="n",main=paste0(download_fachbereich[i]," - no clustering possible"),cex.main=0.8))
+              }
             }else{
               print(plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                    yaxt="n",bty="n",main=paste0(download_fachbereich[i]," - no clustering possible"),cex.main=0.8))
