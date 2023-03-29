@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 24.03.2023"})
+  output$text_info2g<-renderText({"Latest update: 28.03.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -2582,6 +2582,14 @@ The application is not a medical device according to the Medical Devices Act or 
               
               my_annot<-data.frame(Clinic=temp2$ORD_FACHBEREICH)
               row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
+              
+              backup_rownames<-rownames(my_annot)[rownames(my_annot)%in%rownames(temp3_2)]
+              my_annot<-as.data.frame(my_annot[rownames(my_annot)%in%rownames(temp3_2),])
+              rownames(my_annot)<-backup_rownames
+              names(my_annot)<-"Clinic"
+              ann_colors$Clinic<-ann_colors$Clinic[names(ann_colors$Clinic)%in%unique(my_annot[,1])]
+              
+              
 
               output$text_analyse3<-renderText({NULL})
               
@@ -2920,7 +2928,7 @@ The application is not a medical device according to the Medical Devices Act or 
           
           output$plots5 <- renderUI({
             plot_output_list5 <- lapply(1:length(bakterien), function(k) {
-              plotname5 <- paste("plot5", k, sep="")
+              plotname5 <- paste("plot5_", k, sep="")
               plotOutput(plotname5, height = 400, width = weite[k])
             })
             do.call(tagList, plot_output_list5)
@@ -3651,6 +3659,13 @@ The application is not a medical device according to the Medical Devices Act or 
               my_annot<-data.frame(Species=temp2$RES_ERREGER)
               row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
               
+              backup_rownames<-rownames(my_annot)[rownames(my_annot)%in%rownames(temp3_2)]
+              my_annot<-as.data.frame(my_annot[rownames(my_annot)%in%rownames(temp3_2),])
+              rownames(my_annot)<-backup_rownames
+              names(my_annot)<-"Species"
+              ann_colors$Species<-ann_colors$Species[names(ann_colors$Species)%in%unique(my_annot[,1])]
+              
+              
               missing<-colSums(!is.na(temp3))/length(temp3[,1])
               temp3_2missing<-as.data.frame(temp3[,missing>0.8])
               
@@ -4053,6 +4068,14 @@ The application is not a medical device according to the Medical Devices Act or 
               my_annot<-data.frame(Clinic=temp2$ORD_FACHBEREICH)
               row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
               
+              #backup_rownames<-rownames(my_annot)[rownames(my_annot)%in%rownames(temp3_2)]
+              #my_annot<-as.data.frame(my_annot[rownames(my_annot)%in%rownames(temp3_2),])
+              #rownames(my_annot)<-backup_rownames
+              #names(my_annot)<-"Clinic"
+              #ann_colors$Clinic<-ann_colors$Clinic[names(ann_colors$Clinic)%in%unique(my_annot[,1])]
+              
+              
+              
               output$text_analyse3<-renderText({NULL})
               
               missing<-colSums(!is.na(temp3))/length(temp3[,1])
@@ -4085,7 +4108,16 @@ The application is not a medical device according to the Medical Devices Act or 
               einmalig<-einmalig[!is.na(einmalig)]
               einmalig<-einmalig*2-1
               
-              if(length(temp3_2[,1])>1&&beste!=1){
+              abc=data.frame(x=1)
+              data<-lapply(abc,function(x){
+                tryCatch({pheatmap(t(as.matrix(temp3_2)),legend_labels = c("S","I","R")[einmalig],legend_breaks=c(1,1.5,2)[einmalig],
+                                   main=download_bakterien[i],annotation_col =my_annot,breaks=ifelse(length(einmalig)!=1,NA,c(0,3)),
+                                   cluster_rows = F,cluster_cols = T,show_colnames = F,annotation_colors=ann_colors,
+                                   clustering_method = "ward.D",fontsize = min(7,floor(210/length(ann_colors$Spezies))),
+                                   fontsize_col = 5,cutree_cols = beste,silent=T)
+                },error=function(e) NULL)
+              })
+              if(length(temp3_2[,1])>1&&beste!=1&&!is.null(data[[1]])){
                 print(pheatmap(t(as.matrix(temp3_2)),legend_labels = c("S","I","R")[einmalig],legend_breaks=c(1,1.5,2)[einmalig],
                          main=download_bakterien[i],annotation_col =my_annot,breaks=ifelse(length(einmalig)!=1,NA,c(0,3)),
                          cluster_rows = F,cluster_cols = T,show_colnames = F,annotation_colors=ann_colors,
@@ -4796,6 +4828,14 @@ The application is not a medical device according to the Medical Devices Act or 
             
             my_annot<-data.frame(Species=temp2$RES_ERREGER)
             row.names(my_annot)<-paste0("A",1:length(temp3[,1]))
+            
+            backup_rownames<-rownames(my_annot)[rownames(my_annot)%in%rownames(temp3_2)]
+            my_annot<-as.data.frame(my_annot[rownames(my_annot)%in%rownames(temp3_2),])
+            rownames(my_annot)<-backup_rownames
+            names(my_annot)<-"Species"
+            ann_colors$Species<-ann_colors$Species[names(ann_colors$Species)%in%unique(my_annot[,1])]
+            
+            
             
             missing<-colSums(!is.na(temp3))/length(temp3[,1])
             temp3_2missing<-as.data.frame(temp3[,missing>0.8])
