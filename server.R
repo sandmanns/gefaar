@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 28.03.2023"})
+  output$text_info2g<-renderText({"Latest update: 13.04.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -1943,7 +1943,7 @@ The application is not a medical device according to the Medical Devices Act or 
           table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
           
           table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
-          names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% KI R","Year")
+          names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% CI R","Year")
           
           table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
           eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
@@ -1986,7 +1986,7 @@ The application is not a medical device according to the Medical Devices Act or 
               points(x=help_bar$Year,y=help_bar$`R %`,cex=3,type="l",lwd=5)
               points(x=help_bar$Year,y=help_bar$`R %`,cex=2,pch=21,type="p",lwd=3,bg="darkgoldenrod2",col="darkgoldenrod4")
               
-              title("R %    95% KI R",line = 0.3)
+              title("R %    95% CI R",line = 0.3)
               mtext(help_bar$Antimicrobial[1],adj=-0.17,cex=1.5,col=rgb(49/255,126/255,172/255),line=2)
             })
           })
@@ -2125,7 +2125,7 @@ The application is not a medical device according to the Medical Devices Act or 
             table_anti_bak[,5]<-format(round(100*table_anti_bak[,5]/table_anti_bak[,2],1),nsmall=1)
             
             table_anti_bak<-table_anti_bak[!is.na(table_anti_bak[,6]),]
-            names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% KI R","Year")
+            names(table_anti_bak)<-c("Antimicrobial agent","N","S %","I %","R %","95% CI R","Year")
             
             table_anti_bak<-table_anti_bak[table_anti_bak$N>=30,]
             eintrag_laenge_ab[ab]<-length(table_anti_bak[,1])
@@ -2230,7 +2230,7 @@ The application is not a medical device according to the Medical Devices Act or 
             points(x=help_bar$Year,y=help_bar$`R %`,cex=3,type="l",lwd=5)
             points(x=help_bar$Year,y=help_bar$`R %`,cex=2,pch=21,type="p",lwd=3,bg="darkgoldenrod2",col="darkgoldenrod4")
             
-            title("R %    95% KI R",line = 0.3,cex=1.5)
+            title("R %    95% CI R",line = 0.3,cex=1.5)
             dev.off()
             
             insertImage(wb, sheet="Trend", paste0(tempdir(), "/", "plot",ab,".png"), width = 8,height = 7.8/1000*400,
