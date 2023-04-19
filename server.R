@@ -12,19 +12,19 @@ Sys.setlocale("LC_CTYPE", "")
 
 shinyServer(function(input, output, session) {
   output$text_analyse1<-renderText({"Analysis not yet conducted"})
-  output$text_analyse1a<-renderText({"Heatmap (order: clinics, resistance)"})
+  output$text_analyse1a<-renderText({"Heatmap (order: clinics/units, resistance)"})
   output$text_analyse2<-renderText({"Analysis not yet conducted"})
-  output$text_analyse2a<-renderText({"Heatmap (order: clinics, date)"})
+  output$text_analyse2a<-renderText({"Heatmap (order: clinics/units, date)"})
   output$text_analyse3<-renderText({"Analysis not yet conducted"})
   output$text_analyse3a<-renderText({"Heatmap (hierarchical clustering)"})
   output$text_analyse4<-renderText({"Analysis not yet conducted"})
-  output$text_analyse4a<-renderText({"UMAP (colored clinics)"})
+  output$text_analyse4a<-renderText({"UMAP (colored clinics/units)"})
   output$text_analyse5<-renderText({"Analysis not yet conducted"})
   output$text_analyse5a<-renderText({"UMAP (colored clusters)"})
   output$text_analyse6<-renderText({"Analysis not yet conducted"})
   output$text_analyse6a<-renderText({"Additional heatmap (order: UMAP cluster)"})
   output$text_analyse6b<-renderText({"Analysis not yet conducted"})
-  output$text_analyse6ab<-renderText({"Additional heatmap (order: clinics)"})
+  output$text_analyse6ab<-renderText({"Additional heatmap (order: clinics/units)"})
   
   output$text_analyse7<-renderText({"Analysis not yet conducted"})
   output$text_analyse7a<-renderText({"Heatmap (order: species)"})
@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
   output$text_trend1<-renderText({"Trend analysis"})
   output$text_trend2<-renderText({"Analysis not yet conducted"})
   
-  output$text_zusammenfassung1b<-renderText({"Summary clinics"})
+  output$text_zusammenfassung1b<-renderText({"Summary clinics/units"})
   output$text_zusammenfassung1<-renderText({"Analysis not yet conducted"})
   output$text_zusammenfassung0c3<-renderText({NULL})
   output$text_zusammenfassung2b<-renderText({"Summary antimicrobial agents"})
@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 13.04.2023"})
+  output$text_info2g<-renderText({"Latest update: 19.04.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -112,7 +112,7 @@ The application is not a medical device according to the Medical Devices Act or 
       selectInput('column1',label = HTML("...species: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
     })
     output$columnUI2<-renderUI({
-      selectInput('column2',label = HTML("...clinic:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
+      selectInput('column2',label = HTML("...clinic/unit:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
     })
     output$columnUI3<-renderUI({
       selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
@@ -250,7 +250,7 @@ The application is not a medical device according to the Medical Devices Act or 
     
     output$bakteriumUI0<-renderUI({
       radioButtons('analysis_type1',label = "Analysis is independently conducted",
-                   choices = c("per species","per clinic"),selected = "per species",inline = T)
+                   choices = c("per species","per clinic/unit"),selected = "per species",inline = T)
     })
     
     output$anweisung<-renderText({NULL})
@@ -285,15 +285,15 @@ The application is not a medical device according to the Medical Devices Act or 
       h5("Analysis by heatmap"),
       h6("Note: Antimicrobial agents with >70% missing values will be filtered automatically for hierarchical clustering."),
       checkboxGroupInput('cluster_type_bak_heat1',label = "Visualization heatmap",
-                         choices = c("Data ordered by 1) clinic, 2) resistance",
-                                     "Data ordered by 1) clinic, 2) date",
+                         choices = c("Data ordered by 1) clinic/unit, 2) resistance",
+                                     "Data ordered by 1) clinic/unit, 2) date",
                                      "Hierarchical clustering")),
       hr(),
       h5("Analysis by dimension reduction (UMAP)"),
       h6("Note: Analysis can only be conducted on complete data. Antimicrobial agents with >20% missing values 
          are automatically filtered. Subsequently, all cases with missing values are filtered."),
       checkboxGroupInput('cluster_type_bak_umap1',label = "Visualization UMAP",
-                         choices = c("Plot with colored clinics",
+                         choices = c("Plot with colored clinics/units",
                                      "Plot with colored clusters"))
     )})
     
@@ -301,15 +301,15 @@ The application is not a medical device according to the Medical Devices Act or 
       req(input$analysis_type1=='per species'&&(input$cluster_type_bak_umap1=='Plot with colored clusters'||length(input$cluster_type_bak_umap1)==2))
       checkboxGroupInput('cluster_type_bak_umap2',label = "Additional heatmap",
                          choices = c("Data ordered by UMAP clusters",
-                                     "Data ordered by clinics"))
+                                     "Data ordered by clinics/units"))
     })
     
     
     #####Kliniken
     output$klinikUI1<-renderUI({conditionalPanel(
-      condition="input.analysis_type1=='per clinic'",
-      h4("Independent analysis per clinic"),
-      radioButtons('clinic_select',label = "Analyze all clinics?  (min. 30 cases)",
+      condition="input.analysis_type1=='per clinic/unit'",
+      h4("Independent analysis per clinic/unit"),
+      radioButtons('clinic_select',label = "Analyze all clinics/units?  (min. 30 cases)",
                    choices = c("Yes","No"),selected = "Yes",inline = T)
     )})
     
@@ -325,14 +325,14 @@ The application is not a medical device according to the Medical Devices Act or 
       fachbereich<-names(alle_fachbereiche_table)[as.numeric(alle_fachbereiche_table)>30]
       
       conditionalPanel(
-      condition="input.clinic_select=='No'&&input.analysis_type1=='per clinic'",
-      checkboxGroupInput('clinic_selected',label = "Select clinic",
+      condition="input.clinic_select=='No'&&input.analysis_type1=='per clinic/unit'",
+      checkboxGroupInput('clinic_selected',label = "Select clinic/unit",
                          choices =fachbereich),
       hr()
     )})
     
     output$klinikUI3<-renderUI({conditionalPanel(
-      condition="input.analysis_type1=='per clinic'",
+      condition="input.analysis_type1=='per clinic/unit'",
       hr(),
       h5("Analysis by heatmap"),
       h6("Note: Antimicrobial agents with >70% missing values will be filtered automatically for hierarchical clustering."),
@@ -393,7 +393,7 @@ The application is not a medical device according to the Medical Devices Act or 
       fb_helper<-fb_helper[order(fb_helper)]
       statistik_fb<-c("All",fb_helper)
       
-      selectInput('statistik3',label = "Clinic",choices = statistik_fb,selected = "All")
+      selectInput('statistik3',label = "Clinic/Unit",choices = statistik_fb,selected = "All")
     })
     
     output$statistikUI3<-renderUI({
@@ -468,7 +468,7 @@ The application is not a medical device according to the Medical Devices Act or 
       fb_helper<-fb_helper[order(fb_helper)]
       erregerstat_fb<-c("All",fb_helper)
       
-      selectInput('erregerstat3',label = "Clinic",choices = erregerstat_fb,selected = "All")
+      selectInput('erregerstat3',label = "Clinic/Unit",choices = erregerstat_fb,selected = "All")
     })
     
     output$erregerstatUI4b<-renderUI({
@@ -500,7 +500,7 @@ The application is not a medical device according to the Medical Devices Act or 
     
     output$downloadUI3<-renderUI({
       checkboxGroupInput('download_analysis_type1',label = "Analysis is independently conducted",
-                   choices = c("per species","per clinic"),inline = T)
+                   choices = c("per species","per clinic/unit"),inline = T)
     })
     
     output$downloadUI4<-renderUI({
@@ -584,8 +584,8 @@ The application is not a medical device according to the Medical Devices Act or 
     output$downloadUIbak3d<-renderUI({
       req(input$download_analysis_type1=='per species'||length(input$download_analysis_type1)==2)
       checkboxGroupInput('download_cluster_type_bak_heat1',label = "Visualization heatmap",
-                         choices = c("Data ordered by 1) clinic, 2) resistance",
-                                     "Data ordered by 1) clinic, 2) date",
+                         choices = c("Data ordered by 1) clinic/unit, 2) resistance",
+                                     "Data ordered by 1) clinic/unit, 2) date",
                                      "Hierarchical clustering"))
     })
     
@@ -608,7 +608,7 @@ The application is not a medical device according to the Medical Devices Act or 
     output$downloadUIbak3h<-renderUI({
       req(input$download_analysis_type1=='per species'||length(input$download_analysis_type1)==2)
       checkboxGroupInput('download_cluster_type_bak_umap1',label = "Visualization UMAP",
-                         choices = c("Plot with colored clinics",
+                         choices = c("Plot with colored clinics/units",
                                      "Plot with colored clusters"))
     })
     
@@ -616,19 +616,19 @@ The application is not a medical device according to the Medical Devices Act or 
       req((input$download_analysis_type1=='per species'||length(input$download_analysis_type1)==2)&&(input$download_cluster_type_bak_umap1=='Plot with colored clusters'||length(input$download_cluster_type_bak_umap1)==2))
       checkboxGroupInput('download_cluster_type_bak_umap2',label = "Additional heatmap",
                          choices = c("Data ordered by UMAP clusters",
-                                     "Data ordered by clinics"))
+                                     "Data ordered by clinic/unit"))
     })
     
     
     #####Kliniken
     output$downloadUIklinik1<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
-      h4("Independent analysis per clinic")
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
+      h4("Independent analysis per clinic/unit")
     })
     
     output$downloadUIklinik1b<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
-      radioButtons('download_clinic_select',label = "Analyze all clinics? (min. 30 cases)",
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
+      radioButtons('download_clinic_select',label = "Analyze all clinics/units? (min. 30 cases)",
                    choices = c("Yes","No"),selected = "Yes",inline = T)
     })
 
@@ -636,7 +636,7 @@ The application is not a medical device according to the Medical Devices Act or 
     download_fachbereich<-download_fachbereich[order(download_fachbereich)]
     
     output$downloadUIklinik2<-renderUI({
-      req(input$download_clinic_select=='No'&&(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2))
+      req(input$download_clinic_select=='No'&&(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2))
       download_alle_fachbereiche<-input2$ORD_FACHBEREICH
       if(input$download_analysis_type1b=="All"){
         download_alle_fachbereiche<-download_alle_fachbereiche[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a]
@@ -645,27 +645,27 @@ The application is not a medical device according to the Medical Devices Act or 
       }
       download_alle_fachbereiche_table<-table(download_alle_fachbereiche)
       download_fachbereich<-names(download_alle_fachbereiche_table)[as.numeric(download_alle_fachbereiche_table)>30]
-      checkboxGroupInput('download_clinic_selected',label = "Select clinics",
+      checkboxGroupInput('download_clinic_selected',label = "Select clinics/units",
                          choices =download_fachbereich)
     })
     
     output$downloadUIklinik3<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
       hr()
     })
     
     output$downloadUIklinik3b<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
       h5("Analysis by heatmap")
     })
     
     output$downloadUIklinik3c<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
       h6("Note: Antimicrobial agents with >70% missing values will be filtered automatically for hierarchical clustering.")
     })
     
     output$downloadUIklinik3d<-renderUI({
-      req(input$download_analysis_type1=='per clinic'||length(input$download_analysis_type1)==2)
+      req(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2)
       checkboxGroupInput('download_cluster_type_klinik_heat1',label = "Visualization heatmap",
                          choices = c("Data ordered by species",
                                      "Hierarchical clustering"))
@@ -676,19 +676,19 @@ The application is not a medical device according to the Medical Devices Act or 
     runBuildModel <- function(input, output) {
       rv$outputText = paste0("<b>Year: </b>",input$statistik1,"<br>",
                              "<b>Specimen: </b>",input$statistik2.2,"<br>",
-                             "<b>Clinic: </b>",input$statistik3,"<br>",
+                             "<b>Clinic/Unit: </b>",input$statistik3,"<br>",
                              "<b>Species: </b>",input$statistik2)
       #shinyjs::html(id = 'text_zusammenfassung0c', rv$outputText)
       #shinyjs::html(id = 'text_zusammenfassung0c2', rv$outputText)
       rv$outputText2 = paste0("<b>Year: </b>",input$statistik1,"<br>",
                               "<b>Specimen: </b>",input$statistik2.2)
       rv$outputText3 = paste0("<b>Material: </b>",input$trend2.2,"<br>",
-                              "<b>Clinic: </b>",input$trend3,"<br>",
+                              "<b>Clinic/Unit: </b>",input$trend3,"<br>",
                               "<b>Species: </b>",input$trend2,"<br>",
                               "<b>Antimicrobial: </b>",input$trend2.3)
       rv$outputText4 = paste0("<b>Year: </b>",input$erregerstat1,"<br>",
                               "<b>Specimen: </b>",input$erregerstat2.2,"<br>",
-                              "<b>Clinic: </b>",input$erregerstat3)
+                              "<b>Clinic/Unit: </b>",input$erregerstat3)
     }
 
     
@@ -752,7 +752,7 @@ The application is not a medical device according to the Medical Devices Act or 
       fb_helper<-fb_helper[order(fb_helper)]
       trend_fb<-c("All",fb_helper)
       
-      selectInput('trend3',label = "Clinic",choices = trend_fb,selected = "All")
+      selectInput('trend3',label = "Clinic/Unit",choices = trend_fb,selected = "All")
     })
     
     output$trendUI3<-renderUI({
@@ -932,7 +932,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
             output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                        extensions = 'Buttons', options = list(
                                                                          dom = 'Blfrtip',
                                                                          buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -949,7 +949,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
             output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                        extensions = 'Buttons', options = list(
                                                                          dom = 'Blfrtip',
                                                                          buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -981,7 +981,7 @@ The application is not a medical device according to the Medical Devices Act or 
             table_fach_bak<-table_fach_bak_backup
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
           output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                      extensions = 'Buttons', options = list(
                                                                        dom = 'Blfrtip',
                                                                        buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -999,7 +999,7 @@ The application is not a medical device according to the Medical Devices Act or 
             table_fach_bak<-table_fach_bak_backup
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                        extensions = 'Buttons', options = list(
                                                                          dom = 'Blfrtip',
                                                                          buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -1041,7 +1041,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
           output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                      extensions = 'Buttons', options = list(
                                                                        dom = 'Blfrtip',
                                                                        buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -1060,7 +1060,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
             output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                        extensions = 'Buttons', options = list(
                                                                          dom = 'Blfrtip',
                                                                          buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -1094,7 +1094,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
           output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                      extensions = 'Buttons', options = list(
                                                                        dom = 'Blfrtip',
                                                                        buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -1113,7 +1113,7 @@ The application is not a medical device according to the Medical Devices Act or 
             names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
             
             output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                        extensions = 'Buttons', options = list(
                                                                          dom = 'Blfrtip',
                                                                          buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
@@ -1261,14 +1261,14 @@ The application is not a medical device according to the Medical Devices Act or 
       ############################################
       zusammenfassung_erstellen<-"No"
       if(zusammenfassung_erstellen=="Yes"){
-        shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate summary clinics","<br>"), add = TRUE)  
+        shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate summary clinics/units","<br>"), add = TRUE)  
 
         ab_spalten<-grep("_",names(input3),invert = T)
         temp<-cbind(input3$ORD_FACHBEREICH,input3$RES_ERREGER,input3[,ab_spalten])
         table_fach_bak<-as.data.frame(cbind(names(table(input3$ORD_FACHBEREICH)),
                                             table(input3$ORD_FACHBEREICH,input3$RES_ERREGER)))
         row.names(table_fach_bak)<-NULL
-        names(table_fach_bak)[1]<-"Clinic"
+        names(table_fach_bak)[1]<-"Clinic/Unit"
         for(i in 2:length(table_fach_bak[1,])){
           table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
         }
@@ -1639,7 +1639,7 @@ The application is not a medical device according to the Medical Devices Act or 
         table_export[3,2]<-input$statistik1
         table_export[4,1]<-"Specimen"
         table_export[4,2]<-input$statistik2.2
-        table_export[5,1]<-"Clinic"
+        table_export[5,1]<-"Clinic/Unit"
         table_export[5,2]<-input$statistik3
         table_export[6,1]<-"Species"
         table_export[6,2]<-input$statistik2
@@ -2168,7 +2168,7 @@ The application is not a medical device according to the Medical Devices Act or 
           table_export[2,1]<-"Trend analysis"
           table_export[3,1]<-"Specimen"
           table_export[3,2]<-input$trend2.2
-          table_export[4,1]<-"Clinic"
+          table_export[4,1]<-"Clinic/Unit"
           table_export[4,2]<-input$trend3
           table_export[5,1]<-"Species"
           table_export[5,2]<-input$trend2 
@@ -2261,9 +2261,9 @@ The application is not a medical device according to the Medical Devices Act or 
           return()
         }
       }
-      if(input$analysis_type1=="per clinic"){
+      if(input$analysis_type1=="per clinic/unit"){
         if(input$clinic_select=="No" && is.null(input$clinic_selected)){
-          shinyjs::html("text", paste0("ERROR: Please select at least one clinic.","<br>"), add = TRUE)    
+          shinyjs::html("text", paste0("ERROR: Please select at least one clinic/unit.","<br>"), add = TRUE)    
           return()
         }
         if(is.null(input$cluster_type_klinik_heat1)){
@@ -2319,8 +2319,8 @@ The application is not a medical device according to the Medical Devices Act or 
           bakterien<-input$bak_selected
         }
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Resistenz
-        if(length(grep("Data ordered by 1) clinic, 2) resistance",input$cluster_type_bak_heat1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic, 2) resistance'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by 1) clinic/unit, 2) resistance",input$cluster_type_bak_heat1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) resistance'","<br>"), add = TRUE)  
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
@@ -2335,7 +2335,7 @@ The application is not a medical device according to the Medical Devices Act or 
           })
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic, 2) resistance", value = 0)
+          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) resistance", value = 0)
           for(i in 1:length(bakterien)){
             local({
 
@@ -2414,8 +2414,8 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Datum
-        if(length(grep("Data ordered by 1) clinic, 2) date",input$cluster_type_bak_heat1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic, 2) date'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by 1) clinic/unit, 2) date",input$cluster_type_bak_heat1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) date'","<br>"), add = TRUE)  
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
@@ -2429,7 +2429,7 @@ The application is not a medical device according to the Medical Devices Act or 
           })
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic, 2) date", value = 0)
+          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) date", value = 0)
           for(i in 1:length(bakterien)){
             local({
               
@@ -2655,8 +2655,8 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         
         ##Clustering: UMAP mit eingefärbten Kliniken/Fachbereichen
-        if(length(grep("Plot with colored clinics",input$cluster_type_bak_umap1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics'","<br>"), add = TRUE)  
+        if(length(grep("Plot with colored clinics/units",input$cluster_type_bak_umap1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics/units'","<br>"), add = TRUE)  
 
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
@@ -2673,7 +2673,7 @@ The application is not a medical device according to the Medical Devices Act or 
           })
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate UMAP 'Plot with colored clinics'", value = 0)
+          progress$set(message = "Generate UMAP 'Plot with colored clinics/units'", value = 0)
           for(i in 1:length(bakterien)){
             local({
               shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp",bakterien[i]), add = TRUE)  
@@ -3227,8 +3227,8 @@ The application is not a medical device according to the Medical Devices Act or 
         }
 
         ##Clustering: Zusätzliche Heatmap supervised nach Kliniken/Fachbereichen mit eingefärbten Kliniken/Fachbereichen
-        if(length(grep("Data ordered by clinics",input$cluster_type_bak_umap2,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinics'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by clinics/units",input$cluster_type_bak_umap2,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinics/units'","<br>"), add = TRUE)  
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
@@ -3245,7 +3245,7 @@ The application is not a medical device according to the Medical Devices Act or 
           })
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate additional heatmap 'Data ordered by clinics'", value = 0)
+          progress$set(message = "Generate additional heatmap 'Data ordered by clinics/units'", value = 0)
           for(i in 1:length(bakterien)){
             local({
               
@@ -3399,7 +3399,7 @@ The application is not a medical device according to the Medical Devices Act or 
       fachbereich<-fachbereich[as.vector(table(input3$ORD_FACHBEREICH))>=30]
       
       
-      if(input$analysis_type1=='per clinic'){
+      if(input$analysis_type1=='per clinic/unit'){
         if(input$clinic_select=="No"){
           fachbereich<-input$clinic_selected
         }
@@ -3761,9 +3761,9 @@ The application is not a medical device according to the Medical Devices Act or 
           return()
         }
       }
-      if(length(grep("per clinic",input$download_analysis_type1))>0){
+      if(length(grep("per clinic/unit",input$download_analysis_type1))>0){
         if(input$download_clinic_select=="No" && is.null(input$download_clinic_selected)){
-          shinyjs::html("text", paste0("ERROR: Please select at least one clinic.","<br>"), add = TRUE)    
+          shinyjs::html("text", paste0("ERROR: Please select at least one clinic/unit.","<br>"), add = TRUE)    
           return()
         }
         if(is.null(input$download_cluster_type_klinik_heat1)){
@@ -3838,20 +3838,20 @@ The application is not a medical device according to the Medical Devices Act or 
         
 
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Resistenz
-        if(length(grep("Data ordered by 1) clinic, 2) resistance",input$download_cluster_type_bak_heat1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic, 2) resistance'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by 1) clinic/unit, 2) resistance",input$download_cluster_type_bak_heat1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) resistance'","<br>"), add = TRUE)  
           
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                yaxt="n",bty="n",main="")
           text(x=0.5,y=0.7,"Heatmap",cex=2.5)
-          text(x=0.5,y=0.4,"Data ordered 1) clinic, 2) resistance",cex=1.5)
+          text(x=0.5,y=0.4,"Data ordered 1) clinic/unit, 2) resistance",cex=1.5)
           
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic, 2) resistance", value = 0)
+          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) resistance", value = 0)
           for(i in 1:length(download_bakterien)){
               shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp",download_bakterien[i]), add = TRUE)  
               
@@ -3916,19 +3916,19 @@ The application is not a medical device according to the Medical Devices Act or 
           }
 
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Datum
-        if(length(grep("Data ordered by 1) clinic, 2) date",input$download_cluster_type_bak_heat1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic, 2) date'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by 1) clinic/unit, 2) date",input$download_cluster_type_bak_heat1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) date'","<br>"), add = TRUE)  
 
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                yaxt="n",bty="n",main="")
           text(x=0.5,y=0.7,"Heatmap",cex=2.5)
-          text(x=0.5,y=0.4,"Data ordered by 1) clinic, 2) date",cex=1.5)
+          text(x=0.5,y=0.4,"Data ordered by 1) clinic/unit, 2) date",cex=1.5)
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic, 2) date'", value = 0)
+          progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) date'", value = 0)
           for(i in 1:length(download_bakterien)){
               shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp",download_bakterien[i]), add = TRUE)  
               
@@ -4134,13 +4134,13 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         
         ##Clustering: UMAP mit eingefärbten Kliniken/Fachbereichen
-        if(length(grep("Plot with colored clinics",input$download_cluster_type_bak_umap1,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics'","<br>"), add = TRUE)  
+        if(length(grep("Plot with colored clinics/units",input$download_cluster_type_bak_umap1,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics/units'","<br>"), add = TRUE)  
           
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                yaxt="n",bty="n",main="")
           text(x=0.5,y=0.7,"UMAP",cex=2.5)
-          text(x=0.5,y=0.4,"Plot with colored clinics",cex=1.5)
+          text(x=0.5,y=0.4,"Plot with colored clinics/units",cex=1.5)
           
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
@@ -4150,7 +4150,7 @@ The application is not a medical device according to the Medical Devices Act or 
                      "orange", "midnightblue", "grey31", "black")
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate UMAP 'Plot with colored clinics'", value = 0)
+          progress$set(message = "Generate UMAP 'Plot with colored clinics/units'", value = 0)
           
           for(i in 1:length(download_bakterien)){
               shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp",download_bakterien[i]), add = TRUE)  
@@ -4534,13 +4534,13 @@ The application is not a medical device according to the Medical Devices Act or 
         }
           
         ##Clustering: Zusätzliche Heatmap supervised nach Kliniken/Fachbereichen mit eingefärbten Kliniken/Fachbereichen
-        if(length(grep("Data ordered by clinic",input$download_cluster_type_bak_umap2,fixed=T))>0){
-          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinic'","<br>"), add = TRUE)  
+        if(length(grep("Data ordered by clinic/unit",input$download_cluster_type_bak_umap2,fixed=T))>0){
+          shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinic/unit'","<br>"), add = TRUE)  
           
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                yaxt="n",bty="n",main="")
           text(x=0.5,y=0.7,"Heatmap",cex=2.5)
-          text(x=0.5,y=0.4,"Data ordered by clinic",cex=1.5)
+          text(x=0.5,y=0.4,"Data ordered by clinic/unit",cex=1.5)
           
           
           farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
@@ -4550,7 +4550,7 @@ The application is not a medical device according to the Medical Devices Act or 
                      "orange", "midnightblue", "grey31", "black")
           
           progress <- shiny::Progress$new()
-          progress$set(message = "Generate additional heatmap 'Data ordered by clinic'", value = 0)
+          progress$set(message = "Generate additional heatmap 'Data ordered by clinic/unit'", value = 0)
 
           for(i in 1:length(download_bakterien)){
               shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp",download_bakterien[i]), add = TRUE)  
@@ -4680,14 +4680,14 @@ The application is not a medical device according to the Medical Devices Act or 
       download_fachbereich<-download_fachbereich[as.vector(table(input3$ORD_FACHBEREICH))>=30]
       
       
-      if(length(grep("per clinic",input$download_analysis_type1))>0){
+      if(length(grep("per clinic/unit",input$download_analysis_type1))>0){
         if(input$download_clinic_select=="No"){
           download_fachbereich<-input$download_clinic_selected
         }
         
         plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
              yaxt="n",bty="n",main="")
-        text(x=0.5,y=0.7,"Independent analysis per clinic",cex=2.5)
+        text(x=0.5,y=0.7,"Independent analysis per clinic/unit",cex=2.5)
         
         ##Clustering: Heatmap, Supervised, 1) Spezies
         if(length(grep("Data ordered by species",input$download_cluster_type_klinik_heat1,fixed=T))>0){
