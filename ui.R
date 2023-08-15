@@ -82,6 +82,7 @@ shinyUI(fluidPage(
       ),
       tabPanel("Trend analysis",
                br(),
+               h4(textOutput("anweisung4pre")),
                uiOutput("trendUI1"),
                uiOutput("trendUI3.2"),
                uiOutput("trendUI4"),

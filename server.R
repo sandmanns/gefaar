@@ -73,6 +73,7 @@ The application is not a medical device according to the Medical Devices Act or 
   output$anweisung1pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung2pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung3pre<-renderText({"Please read in a file and configure input first"})
+  output$anweisung4pre<-renderText({"Please read in a file and configure input first"})
   
   output$inputFileUI<-renderUI({
     if(input$ownData=="Upload own data"){
