@@ -25,7 +25,7 @@ To execute any analyses with GEFAAR, in input file has to be 1) read in and 2) c
 
 * `Select column containing information on...`
   * `...species` Name of the column containing information on the analyzed species.
-  * `...clinic` Name of the column containing information on the clinic.
+  * `...clinic/unit` Name of the column containing information on the clinic/unit.
   * `...specimen` Name of the column containing information on the specimen, in which the species were detected.
   * `...date` Name of the column containing information on the date at which samples were taken.
     * `-> date format` Underlying date format used in the input file (one of: dd.mm.yy, dd.mm.yyyy, mm/dd/yy, mm/dd/yyyy, yy-mm-dd, yyyy-mm-dd)
@@ -34,9 +34,13 @@ To execute any analyses with GEFAAR, in input file has to be 1) read in and 2) c
 
 ### Example
 
-Select exemplary input file 'Example/Input/Examplary_input.txt' and separator `Tab`. Execute `Read in file`.
+Select exemplary input file 'Example/Input/Examplary_input.txt' (for data on one year) or file 'Example/Input/Exemplary_input_3years.txt' (for data on three consecutive years) and separator `Tab`. Execute `Read in file`.
 
-Select column 'Species' for `...species`, 'Clinic' for `...clinic`, 'Specimen' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format` and 'Ampicillin' for `...first antimicrobial agent`. Execute `Configure input`.
+Select column 'Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Specimen' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format` and 'Ampicillin' for `...first antimicrobial agent`. Execute `Configure input`.
+
+As an alternative, select `Load demo data` (data on three consecutive years) and execute `Read in file`.
+
+Columns containing information on species, clinic/unit, specimen, date, date format and first antimicrobial agent are already defined correctly by default ('Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Material' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format` and 'Ampicillin' for `...first antimicrobial agent`). Execute `Configure input`.
 
 
 ## Pathogen statistics
@@ -47,19 +51,19 @@ As soon as an input file has been uploaded and configured, pathogen statistics c
 
 * `Year` Select the year for which data shall be analyzed (default: first available year)
 * `Specimen` Select all or a specific specimen for which pathogen statistics shall be determined (default: all).
-* `Clinic` Select all or a specific clinic for which pathogen statistics shall be determined (default: all).
+* `Clinic/Unit` Select all or a specific clinic/unit for which pathogen statistics shall be determined (default: all).
 * `Cut-off min. 30 cases` Select if cut-off of at least 30 cases shall be applied (as in WHO GLASS Report) (default: yes).
 
 Input options are interactively updated, dependent on the uploaded input file (e.g. only those years can be selected that are available in the previously defined date-column).
 
 ### Output
 
-An interactive version of the patoghen statistics is available in the right panel of the shiny interface, tab `Pathogen statistics`. The analysis can be exported as CSV, Excel or PDF (=Print) file. 
+An interactive version of the pathogen statistics is available in the right panel of the shiny interface, tab `Pathogen statistics`. The analysis can be exported as CSV, Excel or PDF (=Print) file. 
 
 
 ### Example
 
-Keep default parameters (`Year` 2021, `Specimen` All, `Clinic` All, `Cut-off min 30 cases` Yes) and execute `Start analysis`. The interactive pathogen statistics are generated. Export the results as Excel file. The output file to be expected is available in 'Example/Output/GEFAAR_Pathogen_Statistics.xlsx'.
+Keep default parameters (`Year` 2021, `Specimen` All, `Clinic/Unit` All, `Cut-off min 30 cases` Yes) and execute `Start analysis`. The interactive pathogen statistics are generated. Export the results as Excel file. The output file to be expected is available in 'Example/Output/GEFAAR_Pathogen_Statistics.xlsx'.
 
 
 
@@ -71,7 +75,7 @@ As soon as an input file has been uploaded and configured, resistance statistics
 
 * `Year` Select the year for which data shall be analyzed (default: first available year)
 * `Specimen` Select all or a specific specimen for which resistance statistics shall be determined (default: all).
-* `Clinic` Select all or a specific clinic for which resistance statistics shall be determined (default: all).
+* `Clinic/Unit` Select all or a specific clinic/unit for which resistance statistics shall be determined (default: all).
 * `Species` Select all or a specific species for which resistance statistics shall be determined (default: all).
 
 Input options are interactively updated, dependent on the uploaded input file (e.g. only those years can be selected that are available in the previously defined date-column).
@@ -83,7 +87,31 @@ The resistance statistics consist of the `Data sheet antimicrobial agents` and t
 
 ### Example
 
-Keep default parameters (`Year` 2021, `Specimen` All, `Clinic` All, `Species` All) and execute `Start analysis`. The interactive resistance statistics are generated. Execute `xlsx export`to export the results as Excel file. The output file to be expected is available in 'Example/Output/GEFAAR_Resistance_Statistics_2021_Specimen_All_Species_All_Clinic_All.xlsx'.
+Keep default parameters (`Year` 2021, `Specimen` All, `Clinic/Unit` All, `Species` All) and execute `Start analysis`. The interactive resistance statistics are generated. Execute `xlsx export`to export the results as Excel file. The output file to be expected is available in 'Example/Output/GEFAAR_Resistance_Statistics_2021_Specimen_All_Species_All_Clinic_All.xlsx'.
+
+
+## Trend analysis
+
+As soon as an input file has been uploaded and configured, trend analysis can be conducted.
+
+### Details
+
+* `Specimen` Select all or a specific specimen for which trend analysis shall be conducted (default: all).
+* `Clinic/Unit` Select all or a specific clinic/unit for which trend analysis shall be conducted (default: all).
+* `Species` Select a specific species for which trend analysis shall be conducted (default: first available species).
+* `Antimicrobial agent` Select all or a specific antimicrobial agent for which trend analysis shall be conducted (default: all).
+
+Input options are interactively updated, dependent on the uploaded input file (e.g. only those specimen can be selected that are available in the previously defined specimen-column).
+
+### Output
+
+An interactive version of the trend analysis is available in the right panel of the shiny interface, tab `Trend analysis`. The analysis can be exported as xlsx file by executing `xlsx export`.
+
+
+### Example
+
+Keep default parameters (`Specimen` All, `Clinic/Unit` All, `Species` Enterococcus faecalis, `Antimicrobial agent`All) and execute `Start analysis`. The interactive trend analysis is conducted. Execute `xlsx export`to export the results as Excel file. The output file to be expected is available in 'Example/Output/GEFAAR_Trend_Analysis_Specimen_All_Species_Enterococcus faecalis_Clinic_All_Antimicrobial_All.xlsx'.
+
 
 
 ## Cluster analyses
@@ -95,23 +123,23 @@ As soon as an input file has been uploaded and configured, cluster analyses can 
 * `File name of the PDF export` Select standard naming (GEFAAR_Resistance-Cluster-Analyses_<date>) or define an individual name (default: standard; only EXPORT).
 * `Year` Select the year for which data shall be analyzed (default: first available year).
 * `Specimen` Select all or a specific specimen for which cluster analyses shall be conducted (default: all).
-* `Analysis is independently conducted` Select whether an analysis 'per species' or 'per clinic' shall be conducted (default: per species; radio buttons for INTERACTIVE, check boxes for EXPORT).
+* `Analysis is independently conducted` Select whether an analysis 'per species' or 'per clinic/unit' shall be conducted (default: per species; radio buttons for INTERACTIVE, check boxes for EXPORT).
 
 #### Per species
 * `Analyze all species? (min. 30 cases)` Select whether all or a selected set of species shall be analyzed. If 'No' is chosen, all available species are automatically displayed and an individual selection can be made (default: yes).
 
 * `Visualization heatmap` Select analyses by heatmap to be conducted.
-  * Data ordered by 1) clinic, 2) resistance
-  * Data ordered by 1) clinic, 2) date
+  * Data ordered by 1) clinic/unit, 2) resistance
+  * Data ordered by 1) clinic/unit, 2) date
   * Hierarchical clustering
 * `Visualization UMAP` Select analyses by UMAP to be conducted.
-  * Plot with colored clinics
+  * Plot with colored clinics/units
   * Plot with colored clusters 
     * Additional heatmap: Data ordered by UMAP clusters
-    * Additional heatmap: Data ordered by clinics 
+    * Additional heatmap: Data ordered by clinics/units
     
-#### Per clinic
-* `Analyze all clinics? (min. 30 cases)` Select whether all or a selected set of clinics shall be analyzed. If 'No' is chosen, all available clinics are automatically displayed and an individual selection can be made (default: yes).
+#### Per clinic/unit
+* `Analyze all clinics/units? (min. 30 cases)` Select whether all or a selected set of clinics/units shall be analyzed. If 'No' is chosen, all available clinics/units are automatically displayed and an individual selection can be made (default: yes).
 
 * `Visualization heatmap` Select analyses by heatmap to be conducted.
   * Data ordered by species
@@ -127,9 +155,9 @@ An interactive version of the cluster analyses is available in the right panel o
 
 ### Example
 
-Select version `Export`. Keep default parameters (`File name` Standard,`Year` 2021, `Specimen` All). Select 'per species' and 'per clinic' and check all possible analysis options. Execute `Download`. A PDF report, containing all resistance cluster analyses, is automatically generated. The output file to be expected is available in 'Example/Output/GEFAAR_Resistance-Cluster-Analyses_2022-11-09.pdf'.
+Select version `Export`. Keep default parameters (`File name` Standard,`Year` 2021, `Specimen` All). Select 'per species' and 'per clinic/unit' and check all possible analysis options. Execute `Download`. A PDF report, containing all resistance cluster analyses, is automatically generated. The output file to be expected is available in 'Example/Output/GEFAAR_Resistance-Cluster-Analyses_2022-11-09.pdf'.
 
-As an alternative: select version `Interactive`. Keep default parameters (`File name` Standard,`Year` 2021, `Specimen` All). Select either 'per species' or 'per clinic' and check all possible analysis options. Execute `Start analysis`. 
+As an alternative: select version `Interactive`. Keep default parameters (`File name` Standard,`Year` 2021, `Specimen` All). Select either 'per species' or 'per clinic/unit' and check all possible analysis options. Execute `Start analysis`. 
 
 
 

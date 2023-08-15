@@ -6,6 +6,7 @@ library(NbClust)
 library(M3C)
 library(ggplot2)
 library(openxlsx)
+library(randomcoloR)
 #library(gridExtra)
 #library(grid)
 Sys.setlocale("LC_CTYPE", "")
@@ -73,15 +74,575 @@ The application is not a medical device according to the Medical Devices Act or 
   output$anweisung2pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung3pre<-renderText({"Please read in a file and configure input first"})
   
+  output$inputFileUI<-renderUI({
+    if(input$ownData=="Upload own data"){
+      fileInput('inputFile',label = "Upload input file")
+    }else{
+      NULL
+    }
+  })
+  output$sepInputUI<-renderUI({
+    if(input$ownData=="Upload own data"){
+      radioButtons('sepInput',label = "Separator input file",
+                   choices = c("Comma","Semicolon","Tab"),selected = character(0),
+                   inline = T)
+    }else{
+      NULL
+    }
+  })
   
+
   #jahre_verfuegbar<-c(2021,2022)
   #jahr_gewaehlt<-2021
   #input2<-read.table("www/Daten2021.txt",
   #                   header=T,quote = "",comment.char = "",sep="\t",stringsAsFactors = F) 
   ########################################################################
   
+  observeEvent(input$do_clear,{
+    session$reload()
+
+  })
+  
+  
+  
+  
   ###UPload hinzufügen!
   observeEvent(input$do_in,{
+    if(input$ownData=="Load demo data"){
+      shinyjs::html("text", paste0("<br>Demo data is generated.<br><br>"), add = FALSE)
+      
+      ###########2021
+      erreger<-"Escherichia coli"
+      number<-1000
+      temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
+                        Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
+                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Erythromycin=c(rep("-",1047)),
+                        Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
+                        Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
+                        Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
+                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Vancomycin=c(rep("-",1047)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,7,11,1,4,8,64))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      
+      input_sim1a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2021/01/01')+sample(0:364,size = number,replace = T))
+      input_sim1b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim1<-cbind(input_sim1a,input_sim1b)
+      
+      
+      erreger<-"Staphylococcus aureus"
+      number<-800
+      temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
+                        Amoxicillin=c(rep("-",198),rep("R",1)),
+                        Cefepim=c(rep("-",199)),
+                        Ciprofloxacin=c(rep("-",159),rep("R",40)),
+                        Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
+                        Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
+                        Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
+                        Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
+                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,20,22,2,3,43,5))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim2a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2021/01/01')+sample(0:364,size = number,replace = T))
+      input_sim2b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim2<-cbind(input_sim2a,input_sim2b)
+      
+      
+      erreger<-"Staphylococcus epidermidis"
+      number<-600
+      temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
+                        Amoxicillin=c(rep("-",500)),
+                        Cefepim=c(rep("-",500)),
+                        Ciprofloxacin=c(rep("-",236),rep("R",264)),
+                        Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
+                        Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
+                        Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
+                        Piperacillin=c(rep("-",157),rep("R",343)),
+                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Vancomycin=c(rep("-",39),rep("S",461)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(22,0,41,15,7,14,1))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim3a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2021/01/01')+sample(0:364,size = number,replace = T))
+      input_sim3b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim3<-cbind(input_sim3a,input_sim3b)
+      
+      
+      
+      erreger<-"Pseudomonas aeruginosa"
+      number<-400
+      temp3<-data.frame(Ampicillin=c(rep("-",200)),
+                        Amoxicillin=c(rep("-",200)),
+                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
+                        Erythromycin=c(rep("-",200)),
+                        Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
+                        Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
+                        Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
+                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Vancomycin=c(rep("-",200)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(3,18,15,2,3,29,30))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim4a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2021/01/01')+sample(0:364,size = number,replace = T))
+      input_sim4b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim4<-cbind(input_sim4a,input_sim4b)
+      
+      
+      
+      erreger<-"Enterococcus faecalis"
+      number<-100
+      temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
+                        Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
+                        Cefepim=c(rep("-",58)),
+                        Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
+                        Erythromycin=c(rep("-",58)),
+                        Gentamycin=c(rep("-",58)),
+                        Meropenem=c(rep("-",58)),
+                        Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
+                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Vancomycin=c(rep("-",58)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(4,0,30,4,12,8,42))
+      
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim5a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2021/01/01')+sample(0:364,size = number,replace = T))
+      input_sim5b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim5<-cbind(input_sim5a,input_sim5b)
+      
+      input_sim<-rbind(input_sim1,input_sim2,input_sim3,input_sim4,input_sim5)
+      
+      
+      
+      
+      input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
+      
+      input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
+      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      
+      input_sim_2021<-input_sim_b[,c(1,3,2,4:14)]
+      
+      
+      
+      
+      
+      
+      
+      ############2022
+      erreger<-"Escherichia coli"
+      number<-1050
+      temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
+                        Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
+                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Erythromycin=c(rep("-",1047)),
+                        Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
+                        Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
+                        Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
+                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Vancomycin=c(rep("-",1047)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,7,11,1,4,8,64))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      
+      input_sim1a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2022/01/01')+sample(0:364,size = number,replace = T))
+      input_sim1b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim1<-cbind(input_sim1a,input_sim1b)
+      
+      
+      erreger<-"Staphylococcus aureus"
+      number<-850
+      temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
+                        Amoxicillin=c(rep("-",198),rep("R",1)),
+                        Cefepim=c(rep("-",199)),
+                        Ciprofloxacin=c(rep("-",159),rep("R",40)),
+                        Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
+                        Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
+                        Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
+                        Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
+                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,20,22,2,3,43,5))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim2a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2022/01/01')+sample(0:364,size = number,replace = T))
+      input_sim2b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim2<-cbind(input_sim2a,input_sim2b)
+      
+      
+      erreger<-"Staphylococcus epidermidis"
+      number<-550
+      temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
+                        Amoxicillin=c(rep("-",500)),
+                        Cefepim=c(rep("-",500)),
+                        Ciprofloxacin=c(rep("-",236),rep("R",264)),
+                        Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
+                        Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
+                        Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
+                        Piperacillin=c(rep("-",157),rep("R",343)),
+                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Vancomycin=c(rep("-",39),rep("S",461)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(22,0,41,15,7,14,1))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim3a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2022/01/01')+sample(0:364,size = number,replace = T))
+      input_sim3b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim3<-cbind(input_sim3a,input_sim3b)
+      
+      
+      
+      erreger<-"Pseudomonas aeruginosa"
+      number<-350
+      temp3<-data.frame(Ampicillin=c(rep("-",200)),
+                        Amoxicillin=c(rep("-",200)),
+                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
+                        Erythromycin=c(rep("-",200)),
+                        Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
+                        Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
+                        Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
+                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Vancomycin=c(rep("-",200)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(3,18,15,2,3,29,30))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim4a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2022/01/01')+sample(0:364,size = number,replace = T))
+      input_sim4b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim4<-cbind(input_sim4a,input_sim4b)
+      
+      
+      
+      erreger<-"Enterococcus faecalis"
+      number<-120
+      temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
+                        Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
+                        Cefepim=c(rep("-",58)),
+                        Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
+                        Erythromycin=c(rep("-",58)),
+                        Gentamycin=c(rep("-",58)),
+                        Meropenem=c(rep("-",58)),
+                        Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
+                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Vancomycin=c(rep("-",58)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(4,0,30,4,12,8,42))
+      
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim5a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2022/01/01')+sample(0:364,size = number,replace = T))
+      input_sim5b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim5<-cbind(input_sim5a,input_sim5b)
+      
+      input_sim<-rbind(input_sim1,input_sim2,input_sim3,input_sim4,input_sim5)
+      
+      
+      
+      
+      input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
+      
+      input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
+      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      
+      input_sim_2022<-input_sim_b[,c(1,3,2,4:14)]
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      ############2020
+      erreger<-"Escherichia coli"
+      number<-950
+      temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
+                        Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
+                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Erythromycin=c(rep("-",1047)),
+                        Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
+                        Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
+                        Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
+                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Vancomycin=c(rep("-",1047)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,7,11,1,4,8,64))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      
+      input_sim1a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2020/01/01')+sample(0:364,size = number,replace = T))
+      input_sim1b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim1<-cbind(input_sim1a,input_sim1b)
+      
+      
+      erreger<-"Staphylococcus aureus"
+      number<-750
+      temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
+                        Amoxicillin=c(rep("-",198),rep("R",1)),
+                        Cefepim=c(rep("-",199)),
+                        Ciprofloxacin=c(rep("-",159),rep("R",40)),
+                        Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
+                        Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
+                        Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
+                        Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
+                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(5,20,22,2,3,43,5))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim2a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2020/01/01')+sample(0:364,size = number,replace = T))
+      input_sim2b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim2<-cbind(input_sim2a,input_sim2b)
+      
+      
+      erreger<-"Staphylococcus epidermidis"
+      number<-650
+      temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
+                        Amoxicillin=c(rep("-",500)),
+                        Cefepim=c(rep("-",500)),
+                        Ciprofloxacin=c(rep("-",236),rep("R",264)),
+                        Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
+                        Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
+                        Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
+                        Piperacillin=c(rep("-",157),rep("R",343)),
+                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Vancomycin=c(rep("-",39),rep("S",461)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(22,0,41,15,7,14,1))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim3a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2020/01/01')+sample(0:364,size = number,replace = T))
+      input_sim3b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim3<-cbind(input_sim3a,input_sim3b)
+      
+      
+      
+      erreger<-"Pseudomonas aeruginosa"
+      number<-450
+      temp3<-data.frame(Ampicillin=c(rep("-",200)),
+                        Amoxicillin=c(rep("-",200)),
+                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
+                        Erythromycin=c(rep("-",200)),
+                        Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
+                        Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
+                        Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
+                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Vancomycin=c(rep("-",200)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(3,18,15,2,3,29,30))
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim4a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2020/01/01')+sample(0:364,size = number,replace = T))
+      input_sim4b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim4<-cbind(input_sim4a,input_sim4b)
+      
+      
+      
+      erreger<-"Enterococcus faecalis"
+      number<-80
+      temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
+                        Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
+                        Cefepim=c(rep("-",58)),
+                        Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
+                        Erythromycin=c(rep("-",58)),
+                        Gentamycin=c(rep("-",58)),
+                        Meropenem=c(rep("-",58)),
+                        Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
+                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Vancomycin=c(rep("-",58)))
+      
+      temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
+                                       "Punctate/secretion","Superficial swap","Urine"),
+                                Freq=c(4,0,30,4,12,8,42))
+      
+      material<-as.character(c(rep(temp_material[1,1],temp_material[1,2]),
+                               rep(temp_material[2,1],temp_material[2,2]),
+                               rep(temp_material[3,1],temp_material[3,2]),
+                               rep(temp_material[4,1],temp_material[4,2]),
+                               rep(temp_material[5,1],temp_material[5,2]),
+                               rep(temp_material[6,1],temp_material[6,2]),
+                               rep(temp_material[7,1],temp_material[7,2])))
+      input_sim5a<-data.frame(Erreger=rep(erreger,number),
+                              Material=material[round(runif(n=number,min=0.5,max=100.49))],
+                              Klinik=c(paste0("Clinic 0",1:9),"Clinic 10")[round(runif(n=number,min=0.5,max=10.49))],
+                              Datum=as.Date('2020/01/01')+sample(0:364,size = number,replace = T))
+      input_sim5b<-temp3[runif(n=number,min=1,max=length(temp3[,1])),]
+      input_sim5<-cbind(input_sim5a,input_sim5b)
+      
+      input_sim<-rbind(input_sim1,input_sim2,input_sim3,input_sim4,input_sim5)
+      
+      
+      
+      
+      input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
+      
+      input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
+      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      
+      input_sim_2020<-input_sim_b[,c(1,3,2,4:14)]
+      
+      
+      input2<-rbind(input_sim_2020,input_sim_2021,input_sim_2022)
+      
+      shinyjs::html("text", paste0("Demo data successfully generated.","<br>"), add = TRUE) 
+    }else{
     shinyjs::html("text", paste0("<br>Input file is read in.<br><br>"), add = FALSE)
     input_temp<-input$inputFile
     if(is.null(input_temp)){
@@ -101,42 +662,83 @@ The application is not a medical device according to the Medical Devices Act or 
     if(input$sepInput=="Tab"){
       input2<-read.table(input_temp$datapath,header=T,quote = "",comment.char = "",sep="\t",stringsAsFactors = F)    
     }
-    
 
     
     shinyjs::html("text", paste0("Input file successfully read in.","<br>"), add = TRUE) 
+    
+    }
     
     output$columnUI0<-renderText({"Select column containing information on..."})
     
     output$columnUI1<-renderUI({
       selectInput('column1',label = HTML("...species: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
     })
-    output$columnUI2<-renderUI({
-      selectInput('column2',label = HTML("...clinic/unit:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
-    })
-    output$columnUI3<-renderUI({
-      selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
-    })
-    output$columnUI4<-renderUI({
-      selectInput('column4',label = HTML("...date:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
-    })
-    output$columnUI4b<-renderUI({
-      selectInput('column4b',label = HTML("&nbsp&nbsp&nbsp-> date format:"),
-                  choices = c("dd.mm.yy","dd.mm.yyyy",
-                              "mm/dd/yy","mm/dd/yyyy",
-                              "yy-mm-dd","yyyy-mm-dd"))
-    })
     
+    if(input$ownData=="Load demo data"){
+      output$columnUI2<-renderUI({
+        selectInput('column2',label = HTML("...clinic/unit:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2),selected = "Clinic")
+      })
+    }else{
+      output$columnUI2<-renderUI({
+        selectInput('column2',label = HTML("...clinic/unit:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
+      })
+    }
+
+    if(input$ownData=="Load demo data"){
+      output$columnUI3<-renderUI({
+        selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2),selected="Material")
+      })
+    }else{
+      output$columnUI3<-renderUI({
+        selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
+      })
+    }
     
-    output$columnUI5<-renderUI({
-      selectInput('column5',label = HTML("...first antimicrobial agent:"),choices = names(input2))
-    })
+    if(input$ownData=="Load demo data"){
+      output$columnUI4<-renderUI({
+        selectInput('column4',label = HTML("...date:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),
+                    choices = names(input2),selected="Date")
+      })
+    }else{
+      output$columnUI4<-renderUI({
+        selectInput('column4',label = HTML("...date:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
+      })
+    }
+    
+    if(input$ownData=="Load demo data"){
+      output$columnUI4b<-renderUI({
+        selectInput('column4b',label = HTML("&nbsp&nbsp&nbsp-> date format:"),
+                    choices = c("dd.mm.yy","dd.mm.yyyy",
+                                "mm/dd/yy","mm/dd/yyyy",
+                                "yy-mm-dd","yyyy-mm-dd"),selected = "yyyy-mm-dd")
+      })
+    }else{
+      output$columnUI4b<-renderUI({
+        selectInput('column4b',label = HTML("&nbsp&nbsp&nbsp-> date format:"),
+                    choices = c("dd.mm.yy","dd.mm.yyyy",
+                                "mm/dd/yy","mm/dd/yyyy",
+                                "yy-mm-dd","yyyy-mm-dd"))
+      })
+    }
+    
+    if(input$ownData=="Load demo data"){
+      output$columnUI5<-renderUI({
+        selectInput('column5',label = HTML("...first antimicrobial agent:"),choices = names(input2),selected="Ampicillin")
+      })
+    }else{
+      output$columnUI5<-renderUI({
+        selectInput('column5',label = HTML("...first antimicrobial agent:"),choices = names(input2))
+      })
+    }
+    
     output$columnUI6<-renderText({"Note: All subsequent columns are assumed to contain information on antimicrobial agents as well. 
       The following coding of resistance information is required: 'S' for susceptible, 'I' for susceptible increased exposure, 'R' for resistant, '-' for not analyzed."})
-    
+
     output$do_in2UI<-renderUI({
       actionButton('do_in2',"Configure input",class = "btn-primary")
     })
+    
+
     
     observeEvent(input$do_in2,{
       shinyjs::html("text", paste0("<br>Input file is configured.<br><br>"), add = FALSE)
@@ -151,9 +753,10 @@ The application is not a medical device according to the Medical Devices Act or 
       
       input_neu<-data.frame(PAT_PATIENTENNR=1,ORD_LABORNR=1,ORD_MATERIAL=input2[,names(input2)==input$column3],
                             ORD_FACHBEREICH=input2[,names(input2)==input$column2],
-                            ORD_DATUM=input2[,names(input2)==input$column4],
+                            ORD_DATUM=as.character(input2[,names(input2)==input$column4]),
                             RES_ERREGER=input2[,names(input2)==input$column1],
                             X_STATUS=1)
+
       input_neu<-cbind(input_neu,input2[,c(which(names(input2)==input$column5):length(input2[1,]))])
       
       input2<-input_neu
@@ -165,7 +768,7 @@ The application is not a medical device according to the Medical Devices Act or 
     output$anweisung1pre<-renderText({NULL})
     output$anweisung2pre<-renderText({NULL})
     output$anweisung3pre<-renderText({NULL})
-
+    
     
     ##Start Analyse-Konfiguration - Teil 1
 
@@ -222,7 +825,6 @@ The application is not a medical device according to the Medical Devices Act or 
         shinyjs::html("text", paste0("<br>NOTE: Date format yyyy-mm-dd specified, but first entry is ",input2$ORD_DATUM[1],"<br><br>"), add = TRUE)
       }
     }
-    
     
     
     years_bakterien<-unique(format(helper1bakterien,"%Y"))
@@ -2322,7 +2924,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by 1) clinic/unit, 2) resistance",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) resistance'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           
@@ -2417,7 +3019,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by 1) clinic/unit, 2) date",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) date'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           output$plots2 <- renderUI({
@@ -2483,7 +3085,7 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$ORD_FACHBEREICH
               
               ann_colors = list(
-                #Fachbereich = rainbow(n=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
+                #Fachbereich = distinctColorPalette(k=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
                 Clinic=farben[names(farben)%in%levels(as.factor(temp2$ORD_FACHBEREICH))]
               )
               names(ann_colors$Clinic)<-levels(as.factor(temp2$ORD_FACHBEREICH))
@@ -2525,7 +3127,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Hierarchical clustering",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Hierarchical clustering'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           output$plots3 <- renderUI({
@@ -2575,7 +3177,7 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$ORD_FACHBEREICH
               
               ann_colors = list(
-                #Clinic = rainbow(n=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
+                #Clinic = distinctColorPalette(k=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
                 Clinic=farben[names(farben)%in%levels(as.factor(temp2$ORD_FACHBEREICH))]
               )
               names(ann_colors$Clinic)<-levels(as.factor(temp2$ORD_FACHBEREICH))
@@ -2658,7 +3260,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Plot with colored clinics/units",input$cluster_type_bak_umap1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics/units'","<br>"), add = TRUE)  
 
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -2742,7 +3344,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 if(!is.null(data[[1]])){
                   M3C::umap(t(as.matrix(temp3_3)),legendtextsize = min(7,floor(210/length(unique(names(helper))))), 
                             labels=names(helper),colvec = helper,seed = 42) + ggtitle(bakterien[my_i]) + 
-                    theme(plot.title = element_text(size = 20,hjust = 0.5))
+                    theme(plot.title = element_text(size = 20,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2")
                 }else{
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
                        main=paste0(bakterien[my_i]," - Insufficient data"),bty="n")
@@ -2768,7 +3370,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Plot with colored clusters",input$cluster_type_bak_umap1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clusters'","<br>"), add = TRUE)  
 
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -3014,13 +3616,13 @@ The application is not a medical device according to the Medical Devices Act or 
                               seed=42,colvec = col_vec[1:length(levels(as.factor(partition)))],
                               controlscale = T,scale=3) + 
                       ggtitle(bakterien[my_i]) + 
-                      theme(plot.title = element_text(size = 20,hjust = 0.5))
+                      theme(plot.title = element_text(size = 20,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2")
                     
                   }else{
                     M3C::umap(t(as.matrix(temp3_3)),labels=names(helper),colvec = helper,seed = 42,
                               legendtextsize = min(7,floor(210/length(unique(names(helper)))))) + 
                       ggtitle(paste0(bakterien[my_i]," - no unique clustering possible")) + 
-                      theme(plot.title = element_text(size = 20,hjust = 0.5))
+                      theme(plot.title = element_text(size = 20,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2")
                   }
                 })
               }else{
@@ -3061,7 +3663,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by UMAP clusters",input$cluster_type_bak_umap2,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by UMAP clusters'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -3230,7 +3832,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by clinics/units",input$cluster_type_bak_umap2,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinics/units'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -3411,7 +4013,7 @@ The application is not a medical device according to the Medical Devices Act or 
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Data ordered by species'", value = 0)
           
-          farben<-rainbow(n=length(levels(as.factor(input3$RES_ERREGER))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
           names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           hoehen<-c()
@@ -3573,7 +4175,7 @@ The application is not a medical device according to the Medical Devices Act or 
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Hierarchical clustering'", value = 0)
           
-          farben<-rainbow(n=length(levels(as.factor(input3$RES_ERREGER))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
           names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           hoehen<-c()
@@ -3847,7 +4449,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered 1) clinic/unit, 2) resistance",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
@@ -3924,7 +4526,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.7,"Heatmap",cex=2.5)
           text(x=0.5,y=0.4,"Data ordered by 1) clinic/unit, 2) date",cex=1.5)
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
@@ -3980,7 +4582,7 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$ORD_FACHBEREICH
               
               ann_colors = list(
-                #Clinic = rainbow(n=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
+                #Clinic = distinctColorPalette(k=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
                 Clinic=farben[names(farben)%in%levels(as.factor(temp2$ORD_FACHBEREICH))]
               )
               names(ann_colors$Clinic)<-levels(as.factor(temp2$ORD_FACHBEREICH))
@@ -4020,7 +4622,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Hierarchical clustering",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
@@ -4060,7 +4662,7 @@ The application is not a medical device according to the Medical Devices Act or 
               names(helper)<-temp2$ORD_FACHBEREICH
               
               ann_colors = list(
-                #Fachbereich = rainbow(n=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
+                #Fachbereich = distinctColorPalette(k=length(levels(as.factor(temp2$ORD_FACHBEREICH)))),
                 Clinic=farben[names(farben)%in%levels(as.factor(temp2$ORD_FACHBEREICH))]
               )
               names(ann_colors$Clinic)<-levels(as.factor(temp2$ORD_FACHBEREICH))
@@ -4143,7 +4745,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Plot with colored clinics/units",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -4217,7 +4819,7 @@ The application is not a medical device according to the Medical Devices Act or 
               if(!is.null(download_data[[1]])){
                 print(M3C::umap(t(as.matrix(temp3_3)),legendtextsize = min(5,floor(150/length(unique(names(helper))))), 
                                 labels=names(helper),colvec = helper,seed = 42) + ggtitle(download_bakterien[i]) + 
-                        theme(plot.title = element_text(size = 15,hjust = 0.5)))
+                        theme(plot.title = element_text(size = 15,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2"))
               }else{
                 dev.off()
                 print(plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
@@ -4242,7 +4844,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Plot with colored clusters",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -4367,13 +4969,13 @@ The application is not a medical device according to the Medical Devices Act or 
                                   seed=42,colvec = col_vec[1:length(levels(as.factor(partition)))],
                                   controlscale = T,scale=3) + 
                           ggtitle(download_bakterien[i]) + 
-                          theme(plot.title = element_text(size = 20,hjust = 0.5)))
+                          theme(plot.title = element_text(size = 20,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2"))
                   
                 }else{
                   print(M3C::umap(t(as.matrix(temp3_3)),labels=names(helper),colvec = helper,seed = 42,
                                   legendtextsize = min(5,floor(150/length(unique(names(helper)))))) + 
                           ggtitle(paste0(download_bakterien[i]," - no unique clustering possible")) + 
-                          theme(plot.title = element_text(size = 13,hjust = 0.5)))
+                          theme(plot.title = element_text(size = 13,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2"))
                 }
               }else{
                 dev.off()
@@ -4403,7 +5005,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered by UMAP clusters",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -4543,7 +5145,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered by clinic/unit",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
           names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
@@ -4693,7 +5295,7 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by species",input$download_cluster_type_klinik_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by species'","<br>"), add = TRUE)  
           
-          farben<-rainbow(n=length(levels(as.factor(input3$RES_ERREGER))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
           names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
@@ -4782,7 +5384,7 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Hierarchical clustering",cex=1.5)
           
           
-          farben<-rainbow(n=length(levels(as.factor(input3$RES_ERREGER))))
+          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
           names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           progress <- shiny::Progress$new()

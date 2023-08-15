@@ -2,6 +2,7 @@ library(shiny)
 library(shinythemes)
 library(DT)
 library(stringi)
+
 shinyUI(fluidPage(
   theme = shinytheme("cerulean"),
   titlePanel(div("GEFAAR: a GEneric Framework for the Analysis of Antimicrobial Resistance",
@@ -14,12 +15,15 @@ shinyUI(fluidPage(
     shinyjs::useShinyjs(),
     tabsetPanel(
       tabPanel("Input",
-               hr(),
+               br(),
+               column(4,offset = 10,actionButton('do_clear',"RESET",class = "btn-warning")),
+               br(),
                h4("Input"),
-               fileInput('inputFile',label = "Upload input file"),
-               radioButtons('sepInput',label = "Separator input file",
-                            choices = c("Comma","Semicolon","Tab"),selected = character(0),
-                            inline = T),
+               radioButtons("ownData",label="",choices=c("Upload own data","Load demo data"),
+                            selected = "Upload own data",inline = T),
+               br(),
+               uiOutput("inputFileUI"),
+               uiOutput("sepInputUI"),
                br(),
                actionButton('do_in',"Read in file",class = "btn-primary"),
                hr(),

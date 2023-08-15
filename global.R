@@ -30,7 +30,8 @@ cranPackages <- c(
     "NbClust",
     "stringi",
     "BiocManager",
-    "png"
+    "png",
+    "randomcoloR"
 )
 
 biocPackages <- c(
@@ -46,5 +47,4 @@ for (package in cranPackages) {
 for (package in biocPackages) {
     loadOrInstall(package, type = "bioc")
 }
-
 
