@@ -65,7 +65,7 @@ shinyServer(function(input, output, session) {
   output$text_info1b<-renderText({"Contact"})
   output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
   output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 19.04.2023"})
+  output$text_info2g<-renderText({"Latest update: 22.04.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
   
@@ -3344,7 +3344,7 @@ The application is not a medical device according to the Medical Devices Act or 
                 })
                 if(!is.null(data[[1]])){
                   M3C::umap(t(as.matrix(temp3_3)),legendtextsize = min(7,floor(210/length(unique(names(helper))))), 
-                            labels=names(helper),colvec = helper,seed = 42) + ggtitle(bakterien[my_i]) + 
+                            labels=names(helper),colvec = helper,seed = 42, controlscale = T,scale=3) + ggtitle(bakterien[my_i]) + 
                     theme(plot.title = element_text(size = 20,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2")
                 }else{
                   plot(NULL,xlim=c(0,1),ylim=c(0,1),xaxt="n",yaxt="n",xlab="",ylab="",
