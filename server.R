@@ -4819,7 +4819,7 @@ The application is not a medical device according to the Medical Devices Act or 
               })
               if(!is.null(download_data[[1]])){
                 print(M3C::umap(t(as.matrix(temp3_3)),legendtextsize = min(5,floor(150/length(unique(names(helper))))), 
-                                labels=names(helper),colvec = helper,seed = 42) + ggtitle(download_bakterien[i]) + 
+                                labels=names(helper),colvec = helper,seed = 42,controlscale = T,scale=3) + ggtitle(download_bakterien[i]) + 
                         theme(plot.title = element_text(size = 15,hjust = 0.5,face="bold"))+xlab("UMAP 1")+ylab("UMAP 2"))
               }else{
                 dev.off()
