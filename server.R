@@ -117,13 +117,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-1000
       temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
                         Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
-                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Cefepime=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Erythromycin=c(rep("-",1047)),
                         Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
                         Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
                         Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
-                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Tigecycline=c(rep("-",636),rep("R",50),rep("S",361)),
                         Vancomycin=c(rep("-",1047)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -149,13 +149,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-800
       temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
                         Amoxicillin=c(rep("-",198),rep("R",1)),
-                        Cefepim=c(rep("-",199)),
+                        Cefepime=c(rep("-",199)),
                         Ciprofloxacin=c(rep("-",159),rep("R",40)),
                         Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
                         Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
                         Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
                         Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
-                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Tigecycline=c(rep("-",23),rep("R",1),rep("S",175)),
                         Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -180,13 +180,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-600
       temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
                         Amoxicillin=c(rep("-",500)),
-                        Cefepim=c(rep("-",500)),
+                        Cefepime=c(rep("-",500)),
                         Ciprofloxacin=c(rep("-",236),rep("R",264)),
                         Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
                         Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
                         Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
                         Piperacillin=c(rep("-",157),rep("R",343)),
-                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Tigecycline=c(rep("-",35),rep("R",5),rep("S",460)),
                         Vancomycin=c(rep("-",39),rep("S",461)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -212,13 +212,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-400
       temp3<-data.frame(Ampicillin=c(rep("-",200)),
                         Amoxicillin=c(rep("-",200)),
-                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Cefepime=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
                         Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
                         Erythromycin=c(rep("-",200)),
                         Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
                         Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
                         Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
-                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Tigecycline=c(rep("-",199),rep("R",1)),
                         Vancomycin=c(rep("-",200)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -244,13 +244,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-100
       temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
                         Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
-                        Cefepim=c(rep("-",58)),
+                        Cefepime=c(rep("-",58)),
                         Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
                         Erythromycin=c(rep("-",58)),
                         Gentamycin=c(rep("-",58)),
                         Meropenem=c(rep("-",58)),
                         Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
-                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Tigecycline=c(rep("-",4),rep("S",54)),
                         Vancomycin=c(rep("-",58)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -294,13 +294,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-1050
       temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
                         Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
-                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Cefepime=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Erythromycin=c(rep("-",1047)),
                         Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
                         Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
                         Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
-                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Tigecycline=c(rep("-",636),rep("R",50),rep("S",361)),
                         Vancomycin=c(rep("-",1047)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -326,13 +326,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-850
       temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
                         Amoxicillin=c(rep("-",198),rep("R",1)),
-                        Cefepim=c(rep("-",199)),
+                        Cefepime=c(rep("-",199)),
                         Ciprofloxacin=c(rep("-",159),rep("R",40)),
                         Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
                         Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
                         Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
                         Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
-                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Tigecycline=c(rep("-",23),rep("R",1),rep("S",175)),
                         Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -357,13 +357,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-550
       temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
                         Amoxicillin=c(rep("-",500)),
-                        Cefepim=c(rep("-",500)),
+                        Cefepime=c(rep("-",500)),
                         Ciprofloxacin=c(rep("-",236),rep("R",264)),
                         Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
                         Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
                         Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
                         Piperacillin=c(rep("-",157),rep("R",343)),
-                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Tigecycline=c(rep("-",35),rep("R",5),rep("S",460)),
                         Vancomycin=c(rep("-",39),rep("S",461)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -389,13 +389,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-350
       temp3<-data.frame(Ampicillin=c(rep("-",200)),
                         Amoxicillin=c(rep("-",200)),
-                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Cefepime=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
                         Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
                         Erythromycin=c(rep("-",200)),
                         Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
                         Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
                         Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
-                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Tigecycline=c(rep("-",199),rep("R",1)),
                         Vancomycin=c(rep("-",200)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -421,13 +421,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-120
       temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
                         Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
-                        Cefepim=c(rep("-",58)),
+                        Cefepime=c(rep("-",58)),
                         Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
                         Erythromycin=c(rep("-",58)),
                         Gentamycin=c(rep("-",58)),
                         Meropenem=c(rep("-",58)),
                         Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
-                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Tigecycline=c(rep("-",4),rep("S",54)),
                         Vancomycin=c(rep("-",58)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -473,13 +473,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-950
       temp3<-data.frame(Ampicillin=c(rep("-",8),rep("R",827),rep("S",212)),
                         Amoxicillin=c(rep("-",314),rep("R",690),rep("S",43)),
-                        Cefepim=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
+                        Cefepime=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Ciprofloxacin=c(rep("-",6),rep("R",354),rep("S",581),rep("I",106)),
                         Erythromycin=c(rep("-",1047)),
                         Gentamycin=c(rep("-",576),rep("R",64),rep("S",407)),
                         Meropenem=c(rep("-",3),rep("R",1),rep("S",1043)),
                         Piperacillin=c(rep("-",827),rep("R",124),rep("S",96)),
-                        Tigecylin=c(rep("-",636),rep("R",50),rep("S",361)),
+                        Tigecycline=c(rep("-",636),rep("R",50),rep("S",361)),
                         Vancomycin=c(rep("-",1047)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -505,13 +505,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-750
       temp3<-data.frame(Ampicillin=c(rep("-",198),rep("R",1)),
                         Amoxicillin=c(rep("-",198),rep("R",1)),
-                        Cefepim=c(rep("-",199)),
+                        Cefepime=c(rep("-",199)),
                         Ciprofloxacin=c(rep("-",159),rep("R",40)),
                         Erythromycin=c(rep("-",14),rep("R",81),rep("S",100),rep("I",4)),
                         Gentamycin=c(rep("-",16),rep("R",33),rep("S",150)),
                         Meropenem=c(rep("-",37),rep("R",47),rep("S",115)),
                         Piperacillin=c(rep("-",33),rep("R",119),rep("S",47)),
-                        Tigecylin=c(rep("-",23),rep("R",1),rep("S",175)),
+                        Tigecycline=c(rep("-",23),rep("R",1),rep("S",175)),
                         Vancomycin=c(rep("-",15),rep("R",2),rep("S",182)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -536,13 +536,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-650
       temp3<-data.frame(Ampicillin=c(rep("-",499),rep("R",1)),
                         Amoxicillin=c(rep("-",500)),
-                        Cefepim=c(rep("-",500)),
+                        Cefepime=c(rep("-",500)),
                         Ciprofloxacin=c(rep("-",236),rep("R",264)),
                         Erythromycin=c(rep("-",16),rep("R",331),rep("S",153)),
                         Gentamycin=c(rep("-",35),rep("R",207),rep("S",258)),
                         Meropenem=c(rep("-",45),rep("R",343),rep("S",112)),
                         Piperacillin=c(rep("-",157),rep("R",343)),
-                        Tigecylin=c(rep("-",35),rep("R",5),rep("S",460)),
+                        Tigecycline=c(rep("-",35),rep("R",5),rep("S",460)),
                         Vancomycin=c(rep("-",39),rep("S",461)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -568,13 +568,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-450
       temp3<-data.frame(Ampicillin=c(rep("-",200)),
                         Amoxicillin=c(rep("-",200)),
-                        Cefepim=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
+                        Cefepime=c(rep("-",29),rep("R",60),rep("S",1),rep("I",110)),
                         Ciprofloxacin=c(rep("-",4),rep("R",84),rep("S",1),rep("I",111)),
                         Erythromycin=c(rep("-",200)),
                         Gentamycin=c(rep("-",190),rep("R",6),rep("S",4)),
                         Meropenem=c(rep("-",8),rep("R",63),rep("S",84),rep("I",45)),
                         Piperacillin=c(rep("-",168),rep("R",19),rep("I",13)),
-                        Tigecylin=c(rep("-",199),rep("R",1)),
+                        Tigecycline=c(rep("-",199),rep("R",1)),
                         Vancomycin=c(rep("-",200)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -600,13 +600,13 @@ The application is not a medical device according to the Medical Devices Act or 
       number<-80
       temp3<-data.frame(Ampicillin=c(rep("-",1),rep("I",1),rep("R",8),rep("S",48)),
                         Amoxicillin=c(rep("-",23),rep("R",4),rep("S",31)),
-                        Cefepim=c(rep("-",58)),
+                        Cefepime=c(rep("-",58)),
                         Ciprofloxacin=c(rep("-",27),rep("R",5),rep("S",26)),
                         Erythromycin=c(rep("-",58)),
                         Gentamycin=c(rep("-",58)),
                         Meropenem=c(rep("-",58)),
                         Piperacillin=c(rep("-",5),rep("R",7),rep("S",46)),
-                        Tigecylin=c(rep("-",4),rep("S",54)),
+                        Tigecycline=c(rep("-",4),rep("S",54)),
                         Vancomycin=c(rep("-",58)))
       
       temp_material<-data.frame(Var1=c("Blood culture","Deep respiratory secretion","Deep swap/tissue","Foreign body",
@@ -2921,12 +2921,16 @@ The application is not a medical device according to the Medical Devices Act or 
         if(input$bak_select=="No"){
           bakterien<-input$bak_selected
         }
+        
+        farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+        names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+        
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Resistenz
         if(length(grep("Data ordered by 1) clinic/unit, 2) resistance",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) resistance'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           
           output$plots1 <- renderUI({
@@ -3020,8 +3024,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by 1) clinic/unit, 2) date",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by 1) clinic/unit, 2) date'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           output$plots2 <- renderUI({
             plot_output_list2 <- lapply(1:length(bakterien), function(k) {
@@ -3128,8 +3132,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Hierarchical clustering",input$cluster_type_bak_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Hierarchical clustering'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           output$plots3 <- renderUI({
             plot_output_list3 <- lapply(1:length(bakterien), function(k) {
@@ -3261,8 +3265,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Plot with colored clinics/units",input$cluster_type_bak_umap1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clinics/units'","<br>"), add = TRUE)  
 
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -3371,8 +3375,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Plot with colored clusters",input$cluster_type_bak_umap1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate UMAP 'Plot with colored clusters'","<br>"), add = TRUE)  
 
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -3664,8 +3668,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by UMAP clusters",input$cluster_type_bak_umap2,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by UMAP clusters'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -3833,8 +3837,8 @@ The application is not a medical device according to the Medical Devices Act or 
         if(length(grep("Data ordered by clinics/units",input$cluster_type_bak_umap2,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate additional heatmap 'Data ordered by clinics/units'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -4007,6 +4011,9 @@ The application is not a medical device according to the Medical Devices Act or 
           fachbereich<-input$clinic_selected
         }
         
+        farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+        names(farben)<-levels(as.factor(input3$RES_ERREGER))
+        
         ##Clustering: Heatmap, Supervised, 1) Spezies
         if(length(grep("Data ordered by species",input$cluster_type_klinik_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by species'","<br>"), add = TRUE)  
@@ -4014,8 +4021,8 @@ The application is not a medical device according to the Medical Devices Act or 
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Data ordered by species'", value = 0)
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
-          names(farben)<-levels(as.factor(input3$RES_ERREGER))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+          #names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           hoehen<-c()
           weiten<-c()
@@ -4176,8 +4183,8 @@ The application is not a medical device according to the Medical Devices Act or 
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Hierarchical clustering'", value = 0)
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
-          names(farben)<-levels(as.factor(input3$RES_ERREGER))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+          #names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           hoehen<-c()
           weiten<-c()
@@ -4439,6 +4446,8 @@ The application is not a medical device according to the Medical Devices Act or 
              yaxt="n",bty="n",main="")
         text(x=0.5,y=0.7,"Independent analysis per species",cex=2.5)
         
+        farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+        names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
 
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Resistenz
         if(length(grep("Data ordered by 1) clinic/unit, 2) resistance",input$download_cluster_type_bak_heat1,fixed=T))>0){
@@ -4450,8 +4459,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered 1) clinic/unit, 2) resistance",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) resistance", value = 0)
@@ -4527,8 +4536,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.7,"Heatmap",cex=2.5)
           text(x=0.5,y=0.4,"Data ordered by 1) clinic/unit, 2) date",cex=1.5)
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Data ordered by 1) clinic/unit, 2) date'", value = 0)
@@ -4623,8 +4632,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Hierarchical clustering",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Hierarchical clustering'", value = 0)
@@ -4746,8 +4755,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Plot with colored clinics/units",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -4845,8 +4854,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Plot with colored clusters",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -5006,8 +5015,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered by UMAP clusters",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -5146,8 +5155,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Data ordered by clinic/unit",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
-          names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+          #names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
           
           col_vec<-c("skyblue","gold", "violet", "darkorchid", "slateblue", "forestgreen", "violetred",
                      "orange", "midnightblue", "grey31", "black")
@@ -5282,7 +5291,6 @@ The application is not a medical device according to the Medical Devices Act or 
       download_fachbereich<-download_fachbereich[order(download_fachbereich)]
       download_fachbereich<-download_fachbereich[as.vector(table(input3$ORD_FACHBEREICH))>=30]
       
-      
       if(length(grep("per clinic/unit",input$download_analysis_type1))>0){
         if(input$download_clinic_select=="No"){
           download_fachbereich<-input$download_clinic_selected
@@ -5292,12 +5300,15 @@ The application is not a medical device according to the Medical Devices Act or 
              yaxt="n",bty="n",main="")
         text(x=0.5,y=0.7,"Independent analysis per clinic/unit",cex=2.5)
         
+        farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+        names(farben)<-levels(as.factor(input3$RES_ERREGER))
+        
         ##Clustering: Heatmap, Supervised, 1) Spezies
         if(length(grep("Data ordered by species",input$download_cluster_type_klinik_heat1,fixed=T))>0){
           shinyjs::html("text", paste0("<br><br>","&nbsp&nbsp&nbspGenerate heatmap 'Data ordered by species'","<br>"), add = TRUE)  
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
-          names(farben)<-levels(as.factor(input3$RES_ERREGER))
+          #arben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+          #names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1),xlab="",ylab="",xaxt="n",
                yaxt="n",bty="n",main="")
@@ -5385,8 +5396,8 @@ The application is not a medical device according to the Medical Devices Act or 
           text(x=0.5,y=0.4,"Hierarchical clustering",cex=1.5)
           
           
-          farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
-          names(farben)<-levels(as.factor(input3$RES_ERREGER))
+          #farben<-distinctColorPalette(k=length(levels(as.factor(input3$RES_ERREGER))))
+          #names(farben)<-levels(as.factor(input3$RES_ERREGER))
           
           progress <- shiny::Progress$new()
           progress$set(message = "Generate heatmap 'Hierarchical clustering'", value = 0)
