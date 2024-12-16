@@ -31,7 +31,7 @@ cranPackages <- c(
     "stringi",
     "BiocManager",
     "png",
-    "randomcoloR"
+    "shinyWidgets"
 )
 
 biocPackages <- c(
