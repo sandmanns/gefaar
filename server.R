@@ -7,6 +7,7 @@ library(M3C)
 library(ggplot2)
 library(openxlsx)
 library(randomcoloR)
+library(shinyWidgets)
 #library(gridExtra)
 #library(grid)
 Sys.setlocale("LC_CTYPE", "")
@@ -56,19 +57,17 @@ shinyServer(function(input, output, session) {
   output$text_zusammenfassung2<-renderText({"Analysis not yet conducted"})
   output$text_zusammenfassung0c4<-renderText({NULL})
 
-  output$text_info1<-renderText({"Developed by"})
-  output$text_info2a<-renderText({"Institute of Medical Informatics"})
-  output$text_info2c<-renderText({"Albert-Schweitzer-Campus 1, Building A11"})
-  output$text_info2d<-renderText({"48149 Münster"})
-  output$text_info2b<-renderText({"Univ.-Prof. Dr. med. Julian Varghese, M.Sc."})
-  output$text_info2b2<-renderText({"PD Dr. Sarah Sandmann"})
-  output$text_info1b<-renderText({"Contact"})
-  output$text_info2e<-renderText({"www.imi.uni-muenster.de"})
-  output$text_info2f<-renderText({"imi@uni-muenster.de"})
-  output$text_info2g<-renderText({"Latest update: 22.04.2023"})
   output$text_info2h<-renderText({"The intended purpose of this application is to generate an overview of retrospective resistance data.
 The application is not a medical device according to the Medical Devices Act or the EU Medical Device Regulation."})
-  
+  output$text_info1<-renderText({"Developed by"})
+  output$text_info2a<-renderText({"PD Dr. Sarah Sandmann"})
+  output$text_info1b<-renderText({"Contact:"})
+  output$text_info2c<-renderText({"sarah.sandmann@uni-muenster.de"})
+  output$text_info2d<-renderText({"Please cite as:"})
+  output$text_info2b<-renderText({"Sandmann et al. GEFAAR: a generic framework for the analysis of antimicrobial resistance providing statistics and cluster analyses. 
+Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
+  output$text_info2g<-renderText({"Latest update: 09.12.2024"})
+
   output$anweisung0pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung1pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung2pre<-renderText({"Please read in a file and configure input first"})
@@ -93,12 +92,6 @@ The application is not a medical device according to the Medical Devices Act or 
   })
   
 
-  #jahre_verfuegbar<-c(2021,2022)
-  #jahr_gewaehlt<-2021
-  #input2<-read.table("www/Daten2021.txt",
-  #                   header=T,quote = "",comment.char = "",sep="\t",stringsAsFactors = F) 
-  ########################################################################
-  
   observeEvent(input$do_clear,{
     session$reload()
 
@@ -279,10 +272,12 @@ The application is not a medical device according to the Medical Devices Act or 
       input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
       
       input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
-      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      names(input_sim_b)[1:4]<-c("Species","Specimen","Clinic","Date")
       
       input_sim_2021<-input_sim_b[,c(1,3,2,4:14)]
-      
+      input_sim_2021<-cbind(input_sim_2021[,c(1:4)],Isolate=sample(x = c(0,1),size = nrow(input_sim_2021),
+                                                                  replace = T,prob = c(0.05,0.95)),
+                            input_sim_2021[,c(5:14)])
       
       
       
@@ -456,10 +451,12 @@ The application is not a medical device according to the Medical Devices Act or 
       input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
       
       input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
-      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      names(input_sim_b)[1:4]<-c("Species","Specimen","Clinic","Date")
       
       input_sim_2022<-input_sim_b[,c(1,3,2,4:14)]
-      
+      input_sim_2022<-cbind(input_sim_2022[,c(1:4)],Isolate=sample(x = c(0,1),size = nrow(input_sim_2022),
+                                                                  replace = T,prob = c(0.05,0.95)),
+                            input_sim_2022[,c(5:14)])
       
       
       
@@ -635,9 +632,13 @@ The application is not a medical device according to the Medical Devices Act or 
       input_sim_b<-input_sim[,c(1:4,which(as.numeric(colSums(input_sim[,c(5:14)]=="-"))!=2900)+4)]
       
       input_sim_b<-input_sim_b[order(input_sim_b$Klinik,input_sim_b$Datum),]
-      names(input_sim_b)[1:4]<-c("Species","Material","Clinic","Date")
+      names(input_sim_b)[1:4]<-c("Species","Specimen","Clinic","Date")
       
       input_sim_2020<-input_sim_b[,c(1,3,2,4:14)]
+      input_sim_2020<-cbind(input_sim_2020[,c(1:4)],Isolate=sample(x = c(0,1),size = nrow(input_sim_2020),
+                                                                  replace = T,prob = c(0.05,0.95)),
+                            input_sim_2020[,c(5:14)])
+      
       
       
       input2<-rbind(input_sim_2020,input_sim_2021,input_sim_2022)
@@ -687,7 +688,7 @@ The application is not a medical device according to the Medical Devices Act or 
 
     if(input$ownData=="Load demo data"){
       output$columnUI3<-renderUI({
-        selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2),selected="Material")
+        selectInput('column3',label = HTML("...specimen:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2),selected="Specimen")
       })
     }else{
       output$columnUI3<-renderUI({
@@ -703,6 +704,17 @@ The application is not a medical device according to the Medical Devices Act or 
     }else{
       output$columnUI4<-renderUI({
         selectInput('column4',label = HTML("...date:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
+      })
+    }
+    
+    if(input$ownData=="Load demo data"){
+      output$columnUI42<-renderUI({
+        selectInput('column42',label = HTML("...1. isolate:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),
+                    choices = names(input2),selected="Isolate")
+      })
+    }else{
+      output$columnUI42<-renderUI({
+        selectInput('column42',label = HTML("...1. isolate:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"),choices = names(input2))
       })
     }
     
@@ -769,6 +781,7 @@ The application is not a medical device according to the Medical Devices Act or 
     output$anweisung1pre<-renderText({NULL})
     output$anweisung2pre<-renderText({NULL})
     output$anweisung3pre<-renderText({NULL})
+    output$anweisung4pre<-renderText({NULL})
     
     
     ##Start Analyse-Konfiguration - Teil 1
@@ -835,24 +848,31 @@ The application is not a medical device according to the Medical Devices Act or 
     })
     
     output$bakteriumUI0a<-renderUI({
-      selectInput('analysis_type1a',label = "Jahr",choices = years_bakterien)
-      #selectInput('analysis_type1a',label = "Jahr",choices = jahre_verfuegbar,selected = jahr_gewaehlt)
+      #selectInput('analysis_type1a',label = "Jahr",choices = years_bakterien)
+      pickerInput('analysis_type1a',label = "Year",choices = years_bakterien,selected = max(years_bakterien),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$bakteriumUI0b<-renderUI({
-      #input2<-read.table(paste0("www/Daten",input$analysis_type1a,".txt"),
-      #                   header=T,quote = "",comment.char = "",sep="\t",stringsAsFactors = F) 
-      #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
-      #years_bakterien<-unique(format(helper1bakterien,"%Y"))
-      
       material_helper<-unique(input2$ORD_MATERIAL[format(helper1bakterien,"%Y")==input$analysis_type1a])
       material_helper<-material_helper[order(material_helper)]
-      selectInput('analysis_type1b',label = "Specimen",choices = c("All",material_helper),selected="All")
+      #selectInput('analysis_type1b',label = "Specimen",choices = c("All",material_helper),selected="All")
+      pickerInput('analysis_type1b',label = "Specimen",choices = c(material_helper),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
+    output$bakteriumUI0c<-renderUI({
+      materialSwitch('analysis_type1c',label = "Analyze only first patient isolate",value = F,status = "primary",inline = T)
+    })
     
     output$bakteriumUI0<-renderUI({
-      radioButtons('analysis_type1',label = "Analysis is independently conducted",
+      radioButtons('analysis_type1',label = "Analysis is conducted independently",
                    choices = c("per species","per clinic/unit"),selected = "per species",inline = T)
     })
     
@@ -866,21 +886,64 @@ The application is not a medical device according to the Medical Devices Act or 
     )})
 
     output$bakteriumUI2<-renderUI({
-      alle_bakterien<-input2$RES_ERREGER
-      if(input$analysis_type1b=="All"){
-        alle_bakterien<-alle_bakterien[format(helper1bakterien,"%Y")==input$analysis_type1a]
-      }else{
-        alle_bakterien<-alle_bakterien[format(helper1bakterien,"%Y")==input$analysis_type1a&input2$ORD_MATERIAL==input$analysis_type1b]
+      #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
       }
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      }
+      if(input$column4b=="mm/dd/yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+      }
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
+      
+      years_bakterien<-unique(format(helper1bakterien,"%Y"))
+      
+      if(!is.null(input$analysis_type1c)&&input$analysis_type1c==T){
+        input2<-input2[input2$X_STATUS>0,]
+        #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        if(input$column4b=="dd.mm.yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years_bakterien<-unique(format(helper1bakterien,"%Y"))
+      }
+
+      alle_bakterien<-input2$RES_ERREGER
+      alle_bakterien<-alle_bakterien[format(helper1bakterien,"%Y")%in%input$analysis_type1a&input2$ORD_MATERIAL%in%input$analysis_type1b]
       
       alle_bakterien_table<-table(alle_bakterien)
       bakterien<-names(alle_bakterien_table)[as.numeric(alle_bakterien_table)>30]
       
       conditionalPanel(
-      condition="input.bak_select=='No'&&input.analysis_type1=='per species'",
-      checkboxGroupInput('bak_selected',label = "Select species",
-                         choices =bakterien)
-    )})
+        condition="input.bak_select=='No'&&input.analysis_type1=='per species'",
+        checkboxGroupInput('bak_selected',label = "Select species",
+                           choices =bakterien)
+      )
+    })
     
     output$bakteriumUI3<-renderUI({conditionalPanel(
       condition="input.analysis_type1=='per species'",
@@ -917,22 +980,64 @@ The application is not a medical device according to the Medical Devices Act or 
     )})
     
     output$klinikUI2<-renderUI({
-      alle_fachbereiche<-input2$ORD_FACHBEREICH
-      if(input$analysis_type1b=="All"){
-        alle_fachbereiche<-alle_fachbereiche[format(helper1bakterien,"%Y")==input$analysis_type1a]
-      }else{
-        alle_fachbereiche<-alle_fachbereiche[format(helper1bakterien,"%Y")==input$analysis_type1a&input2$ORD_MATERIAL==input$analysis_type1b]
+      #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
       }
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      }
+      if(input$column4b=="mm/dd/yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+      }
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
+      years_bakterien<-unique(format(helper1bakterien,"%Y"))
+
+      if(!is.null(input$analysis_type1c)&&input$analysis_type1c==T){
+        input2<-input2[input2$X_STATUS>0,]
+        #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        if(input$column4b=="dd.mm.yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years_bakterien<-unique(format(helper1bakterien,"%Y"))
+      }
+      
+      alle_fachbereiche<-input2$ORD_FACHBEREICH
+      alle_fachbereiche<-alle_fachbereiche[format(helper1bakterien,"%Y")%in%input$analysis_type1a&input2$ORD_MATERIAL%in%input$analysis_type1b]
       
       alle_fachbereiche_table<-table(alle_fachbereiche)
       fachbereich<-names(alle_fachbereiche_table)[as.numeric(alle_fachbereiche_table)>30]
       
       conditionalPanel(
-      condition="input.clinic_select=='No'&&input.analysis_type1=='per clinic/unit'",
-      checkboxGroupInput('clinic_selected',label = "Select clinic/unit",
-                         choices =fachbereich),
-      hr()
-    )})
+        condition="input.clinic_select=='No'&&input.analysis_type1=='per clinic/unit'",
+        checkboxGroupInput('clinic_selected',label = "Select clinic/unit",
+                           choices =fachbereich),
+        hr()
+      )
+      })
     
     output$klinikUI3<-renderUI({conditionalPanel(
       condition="input.analysis_type1=='per clinic/unit'",
@@ -944,9 +1049,15 @@ The application is not a medical device according to the Medical Devices Act or 
                                      "Hierarchical clustering"))
     )})
     
-    output$analyseUI<-renderUI({actionButton('do_analyse',"Start analysis",class = "btn-primary")})
+    output$analyseUI<-renderUI({actionButton('do_analyse',"Start analysis",class = "btn-primary",disalbed=T)})
     
-    
+    observe({
+      if(!is.null(input$analysis_type1b)){
+        shinyjs::enable("do_analyse")
+      }else{
+        shinyjs::disable("do_analyse")
+      }
+    })
     
     
     
@@ -978,51 +1089,129 @@ The application is not a medical device according to the Medical Devices Act or 
     })
     
     output$statistikUI2<-renderUI({
-      selectInput('statistik1',label = "Year",choices = years)
+      #selectInput('statistik1',label = "Year",choices = years)
+      pickerInput('statistik1',label = "Year",choices = years,selected = max(years),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$statistikUI3.2<-renderUI({
       material_helper<-unique(input2$ORD_MATERIAL[format(helper1,"%Y")==input$statistik1])
       material_helper<-material_helper[order(material_helper)]
-      selectInput('statistik2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      #selectInput('statistik2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      pickerInput('statistik2.2',label = "Specimen",choices = c(material_helper),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$statistikUI4<-renderUI({
-      if(input$statistik2.2=="All"){
-        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==input$statistik1])
-      }else{
-        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2])
+      #if(input$statistik2.2=="All"){
+      #  fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==input$statistik1])
+      #}else{
+      #  fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2])
+      #}
+      #fb_helper<-fb_helper[order(fb_helper)]
+      #statistik_fb<-c("All",fb_helper)
+      #selectInput('statistik3',label = "Clinic/Unit",choices = statistik_fb,selected = "All")
+      statistik_fb<-NULL
+      if(!is.null(input$statistik2.2)){
+        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")%in%input$statistik1&input2$ORD_MATERIAL%in%input$statistik2.2])
+        fb_helper<-fb_helper[order(fb_helper)]
+        statistik_fb<-c(fb_helper)
       }
-      fb_helper<-fb_helper[order(fb_helper)]
-      statistik_fb<-c("All",fb_helper)
-      
-      selectInput('statistik3',label = "Clinic/Unit",choices = statistik_fb,selected = "All")
+      pickerInput('statistik3',label = "Clinic/Unit",choices = c(statistik_fb),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
+    })
+    
+    output$statistikUI4c<-renderUI({
+      materialSwitch('statistik3c',label = "Analyze only first patient isolate",value = F,status = "primary",inline = T)
     })
     
     output$statistikUI3<-renderUI({
-      alle_bakterien<-input2$RES_ERREGER
-      if(input$statistik2.2=="All"&&input$statistik3=="All"){##alle fachbereiche, alle materialien
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1]
+      #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
       }
-      if(input$statistik2.2!="All"&&input$statistik3=="All"){##alle fachbereiche
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2]
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       }
-      if(input$statistik2.2=="All"&&input$statistik3!="All"){##alle materialien
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3]
+      if(input$column4b=="mm/dd/yy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
       }
-      if(input$statistik2.2!="All"&&input$statistik3!="All"){
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3&input2$ORD_MATERIAL==input$statistik2.2]
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
+      years<-unique(format(helper1,"%Y"))
+      
+      if(!is.null(input$statistik3c)&&input$statistik3c==T){
+        input2<-input2[input2$X_STATUS>0,]
+        #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        if(input$column4b=="dd.mm.yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years<-unique(format(helper1,"%Y"))
       }
 
+      alle_bakterien<-input2$RES_ERREGER
+      alle_bakterien<-alle_bakterien[format(helper1,"%Y")%in%input$statistik1&input2$ORD_FACHBEREICH%in%input$statistik3&input2$ORD_MATERIAL%in%input$statistik2.2]
+      
       alle_bakterien_table<-table(alle_bakterien)
-      bakterien_helper<-names(alle_bakterien_table)[as.numeric(alle_bakterien_table)>30]
-      selectInput('statistik2',label = "Species",choices = c("All",bakterien_helper),selected="All")
+      bakterien_helper<-names(alle_bakterien_table)[as.numeric(alle_bakterien_table)>=30]
+      #selectInput('statistik2',label = "Species",choices = c("All",bakterien_helper),selected = "All")
+      
+      if(length(bakterien_helper)>0){
+        pickerInput('statistik2',label = "Species",choices = c(bakterien_helper),
+                    options = list(`actions-box` = TRUE,
+                                   `deselect-all-text` = "Reset",
+                                   `select-all-text` = "Select all",
+                                   `none-selected-text` = "Nothing selected"),multiple=TRUE)
+      }else{
+        pickerInput('statistik2',label = "Species",choices = NULL,
+                    options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
+      }
     })
     
-    output$statistikUI5<-renderUI({actionButton('do_statistik',"Start analysis",class = "btn-primary")})
+    output$statistikUI5<-renderUI({actionButton('do_statistik',"Start analysis",class = "btn-primary",disabled=T)})
     
-    output$statistikUI6<-renderUI({downloadButton('do_statistik_xlsx',"xlsx export")})
+    output$statistikUI6<-renderUI({downloadButton('do_statistik_xlsx',"xlsx export",disabled=T)})
     
+    observe({
+      if(!is.null(input$statistik2)){
+        shinyjs::enable("do_statistik")
+        shinyjs::enable("do_statistik_xlsx")
+      }else{
+        shinyjs::disable("do_statistik")
+        shinyjs::disable("do_statistik_xlsx")
+      }
+    })
     
     
     ##Erreger-Statistik-Konfiguration
@@ -1053,34 +1242,67 @@ The application is not a medical device according to the Medical Devices Act or 
     })
     
     output$erregerstatUI2<-renderUI({
-      selectInput('erregerstat1',label = "Year",choices = years)
+      #selectInput('erregerstat1',label = "Year",choices = years)
+      pickerInput('erregerstat1',label = "Year",choices = years,selected = max(years),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$erregerstatUI3.2<-renderUI({
       material_helper<-unique(input2$ORD_MATERIAL[format(helper1erreger,"%Y")==input$erregerstat1])
       material_helper<-material_helper[order(material_helper)]
-      selectInput('erregerstat2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      #selectInput('erregerstat2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      pickerInput('erregerstat2.2',label = "Specimen",choices = c(material_helper),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
 
     output$erregerstatUI4<-renderUI({
-      if(input$erregerstat2.2=="All"){
-        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1erreger,"%Y")==input$erregerstat1])
-      }else{
-        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1erreger,"%Y")==input$erregerstat1&input2$ORD_MATERIAL==input$erregerstat2.2])
+      #if(input$erregerstat2.2=="All"){
+      #  fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1erreger,"%Y")==input$erregerstat1])
+      #}else{
+      #  fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1erreger,"%Y")==input$erregerstat1&input2$ORD_MATERIAL==input$erregerstat2.2])
+      #}
+      #fb_helper<-fb_helper[order(fb_helper)]
+      #erregerstat_fb<-c("All",fb_helper)
+      erregerstat_fb<-NULL
+      if(!is.null(input$erregerstat2.2)){
+        fb_helper<-unique(input2$ORD_FACHBEREICH[format(helper1erreger,"%Y")%in%input$erregerstat1&input2$ORD_MATERIAL%in%input$erregerstat2.2])
+        fb_helper<-fb_helper[order(fb_helper)]
+        erregerstat_fb<-c(fb_helper)
       }
-      fb_helper<-fb_helper[order(fb_helper)]
-      erregerstat_fb<-c("All",fb_helper)
-      
-      selectInput('erregerstat3',label = "Clinic/Unit",choices = erregerstat_fb,selected = "All")
+      #selectInput('erregerstat3',label = "Clinic/Unit",choices = erregerstat_fb,selected = "Alle")
+      pickerInput('erregerstat3',label = "Clinic/Unit",choices = c(erregerstat_fb),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$erregerstatUI4b<-renderUI({
-      radioButtons('erregerstat3b',label = "Cut-off min. 30 cases",choices = c("Yes","No"),selected = "Yes",inline = T)
+      #radioButtons('erregerstat3b',label = "Cut-off min. 30 cases",choices = c("Yes","No"),selected = "Yes",inline = T)
+      materialSwitch('erregerstat3b',label = "Cut-off min. 30 cases",value = T,status = "primary",inline = T)
     })
     
-    output$erregerstatUI5<-renderUI({actionButton('do_erregerstat',"Start analysis",class = "btn-primary")})
+    output$erregerstatUI4c<-renderUI({
+      materialSwitch('erregerstat3c',label = "Analyze only first patient isolate",value = F,status = "primary",inline = T)
+    })
     
-
+    output$erregerstatUI5<-renderUI({actionButton('do_erregerstat',"Start analysis",class = "btn-primary",disabled=T)})
+    
+    observe({
+      if(!is.null(input$erregerstat3)){
+        shinyjs::enable("do_erregerstat")
+      }else{
+        shinyjs::disable("do_erregerstat")
+      }
+    })
+    
+    
     
     
     ##Start Download-Konfiguration
@@ -1135,13 +1357,27 @@ The application is not a medical device according to the Medical Devices Act or 
     download_years_bakterien<-unique(format(helper1bakterien,"%Y"))
     
     output$downloadUIbak0a<-renderUI({
-      selectInput('download_analysis_type1a',label = "Year",choices = download_years_bakterien)
+      #selectInput('download_analysis_type1a',label = "Year",choices = download_years_bakterien)
+      pickerInput('download_analysis_type1a',label = "Year",choices = download_years_bakterien,selected = max(download_years_bakterien),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$downloadUIbak0b<-renderUI({
       download_material_helper<-unique(input2$ORD_MATERIAL[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a])
       download_material_helper<-download_material_helper[order(download_material_helper)]
-      selectInput('download_analysis_type1b',label = "Specimen",choices = c("All",download_material_helper),selected="All")
+      #selectInput('download_analysis_type1b',label = "Specimen",choices = c("All",download_material_helper),selected="All")
+      pickerInput('download_analysis_type1b',label = "Specimen",choices = c(download_material_helper),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
+    })
+    
+    output$downloadUIbak0c<-renderUI({
+      materialSwitch('download_analysis_type1c',label = "Analyze only first patient isolate",value = F,status = "primary",inline = T)
     })
     
     output$downloadUIbak1<-renderUI({
@@ -1157,15 +1393,61 @@ The application is not a medical device according to the Medical Devices Act or 
     
     output$downloadUIbak2<-renderUI({
       req(input$download_bak_select=='No'&&(input$download_analysis_type1=='per species'||length(input$download_analysis_type1)==2))
+      #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+      }
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      }
+      if(input$column4b=="mm/dd/yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+      }
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
+      years_bakterien<-unique(format(helper1bakterien,"%Y"))
+      download_helper1bakterien<-helper1bakterien
+      download_years_bakterien<-years_bakterien
+      
+      if(!is.null(input$download_analysis_type1c)&&input$download_analysis_type1c==T){
+        input2<-input2[input2$X_STATUS>0,]
+        #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        if(input$column4b=="dd.mm.yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years_bakterien<-unique(format(helper1bakterien,"%Y"))
+        download_helper1bakterien<-helper1bakterien
+        download_years_bakterien<-years_bakterien
+      }
+      
       download_alle_bakterien<-input2$RES_ERREGER
-      if(input$download_analysis_type1b=="All"){
-        download_alle_bakterien<-download_alle_bakterien[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a]
-      }else{
-        download_alle_bakterien<-download_alle_bakterien[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b]
-       }
+      download_alle_bakterien<-download_alle_bakterien[format(download_helper1bakterien,"%Y")%in%input$download_analysis_type1a&input2$ORD_MATERIAL%in%input$download_analysis_type1b]
+      
       download_alle_bakterien_table<-table(download_alle_bakterien)
       download_bakterien<-names(download_alle_bakterien_table)[as.numeric(download_alle_bakterien_table)>30]
-      checkboxGroupInput('download_bak_selected',label = "Select species",
+      checkboxGroupInput('download_bak_selected',label = "Auswahl Spezies",
                          choices =download_bakterien)
      })
     
@@ -1241,11 +1523,7 @@ The application is not a medical device according to the Medical Devices Act or 
     output$downloadUIklinik2<-renderUI({
       req(input$download_clinic_select=='No'&&(input$download_analysis_type1=='per clinic/unit'||length(input$download_analysis_type1)==2))
       download_alle_fachbereiche<-input2$ORD_FACHBEREICH
-      if(input$download_analysis_type1b=="All"){
-        download_alle_fachbereiche<-download_alle_fachbereiche[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a]
-      }else{
-        download_alle_fachbereiche<-download_alle_fachbereiche[format(download_helper1bakterien,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b]
-      }
+      download_alle_fachbereiche<-download_alle_fachbereiche[format(download_helper1bakterien,"%Y")%in%input$download_analysis_type1a&input2$ORD_MATERIAL%in%input$download_analysis_type1b]
       download_alle_fachbereiche_table<-table(download_alle_fachbereiche)
       download_fachbereich<-names(download_alle_fachbereiche_table)[as.numeric(download_alle_fachbereiche_table)>30]
       checkboxGroupInput('download_clinic_selected',label = "Select clinics/units",
@@ -1275,23 +1553,24 @@ The application is not a medical device according to the Medical Devices Act or 
     })
     
     rv <- reactiveValues()
-    
+
     runBuildModel <- function(input, output) {
-      rv$outputText = paste0("<b>Year: </b>",input$statistik1,"<br>",
-                             "<b>Specimen: </b>",input$statistik2.2,"<br>",
-                             "<b>Clinic/Unit: </b>",input$statistik3,"<br>",
-                             "<b>Species: </b>",input$statistik2)
-      #shinyjs::html(id = 'text_zusammenfassung0c', rv$outputText)
-      #shinyjs::html(id = 'text_zusammenfassung0c2', rv$outputText)
-      rv$outputText2 = paste0("<b>Year: </b>",input$statistik1,"<br>",
-                              "<b>Specimen: </b>",input$statistik2.2)
-      rv$outputText3 = paste0("<b>Material: </b>",input$trend2.2,"<br>",
-                              "<b>Clinic/Unit: </b>",input$trend3,"<br>",
-                              "<b>Species: </b>",input$trend2,"<br>",
-                              "<b>Antimicrobial: </b>",input$trend2.3)
-      rv$outputText4 = paste0("<b>Year: </b>",input$erregerstat1,"<br>",
-                              "<b>Specimen: </b>",input$erregerstat2.2,"<br>",
-                              "<b>Clinic/Unit: </b>",input$erregerstat3)
+      rv$outputText = paste0("<b>Year: </b>",paste0(input$statistik1,collapse = " + "),"<br>",
+                             "<b>Specimen: </b>",paste0(input$statistik2.2,collapse = " + "),"<br>",
+                             "<b>Clinic/Unit: </b>",paste0(input$statistik3,collapse = " + "),"<br>",
+                             "<b>Patient isolates: </b>",paste0(ifelse(input$statistik3c==F,"All","Just first")),"<br>",
+                             "<b>Species: </b>",paste0(input$statistik2,collapse = ", "))
+      rv$outputText2 = paste0("<b>Year: </b>",paste0(input$statistik1,collapse = " + "),"<br>",
+                              "<b>Specimen: </b>",paste0(input$statistik2.2,collapse = " + "))
+      rv$outputText3 = paste0("<b>Specimen: </b>",paste0(input$trend2.2,collapse = " + "),"<br>",
+                              "<b>Clinic/Unit: </b>",paste0(input$trend3,collapse = " + "),"<br>",
+                              "<b>Patient isolates: </b>",paste0(ifelse(input$trend3c==F,"All","Just first")),"<br>",
+                              "<b>Species: </b>",paste0(input$trend2,collapse = ", "),"<br>",
+                              "<b>Antimicrobial: </b>",paste0(input$trend2.3,collapse = ", "))
+      rv$outputText4 = paste0("<b>Year: </b>",paste0(input$erregerstat1,collapse = " + "),"<br>",
+                              "<b>Specimen: </b>",paste0(input$erregerstat2.2,collapse = " + "),"<br>",
+                              "<b>Clinic/Unit: </b>",paste0(input$erregerstat3,collapse = " + "),"<br>",
+                              "<b>Patient isolates: </b>",paste0(ifelse(input$erregerstat3c==F,"All","Just first")))
     }
 
     
@@ -1333,90 +1612,116 @@ The application is not a medical device according to the Medical Devices Act or 
       }
       material_helper<-material_all
       material_helper<-material_helper[order(material_helper)]
-      selectInput('trend2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      #selectInput('trend2.2',label = "Specimen",choices = c("All",material_helper),selected="All")
+      pickerInput('trend2.2',label = "Specimen",choices = c(material_helper),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
     })
     
     output$trendUI4<-renderUI({
-      if(input$trend2.2=="All"){
-        fb_all<-unique(input2$ORD_FACHBEREICH)
+      #selectInput('trend3',label = "Clinic/Unit",choices = trend_fb,selected = "All")
+      trend_fb<-NULL
+      if(!is.null(input$trend2.2)){
+        fb_all<-unique(input2$ORD_FACHBEREICH[input2$ORD_MATERIAL%in%input$trend2.2])
         for(y in years){
-          fb_temp<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==y])
+          fb_temp<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==y&input2$ORD_MATERIAL%in%input$trend2.2])
           fb_all<-fb_all[fb_all%in%fb_temp]
         }
         fb_helper<-fb_all
-      }else{
-        fb_all<-unique(input2$ORD_FACHBEREICH[input2$ORD_MATERIAL==input$trend2.2])
-        for(y in years){
-          fb_temp<-unique(input2$ORD_FACHBEREICH[format(helper1,"%Y")==y&input2$ORD_MATERIAL==input$trend2.2])
-          fb_all<-fb_all[fb_all%in%fb_temp]
-        }
-        fb_helper<-fb_all
+        
+        fb_helper<-fb_helper[order(fb_helper)]
+        trend_fb<-c(fb_helper)
       }
-      fb_helper<-fb_helper[order(fb_helper)]
-      trend_fb<-c("All",fb_helper)
       
-      selectInput('trend3',label = "Clinic/Unit",choices = trend_fb,selected = "All")
+      pickerInput('trend3',label = "Clinic/Unit",choices = c(trend_fb),
+                  options = list(`actions-box` = TRUE,
+                                 `deselect-all-text` = "Reset",
+                                 `select-all-text` = "Select all",
+                                 `none-selected-text` = "Nothing selected"),multiple=TRUE)
+    })
+    
+    output$trendUI4c<-renderUI({
+      materialSwitch('trend3c',label = "Analyze only first patient isolate",value = F,status = "primary",inline = T)
     })
     
     output$trendUI3<-renderUI({
-      alle_bakterien<-input2$RES_ERREGER
-      if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
-        alle_bakterien<-alle_bakterien
-        helper_neu<-helper1
-      }
-      if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
-        alle_bakterien<-alle_bakterien[input2$ORD_MATERIAL==input$trend2.2]
-        helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2]
-      }
-      if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
-        alle_bakterien<-alle_bakterien[input2$ORD_FACHBEREICH==input$trend3]
-        helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3]
-      }
-      if(input$trend2.2!="All"&&input$trend3!="All"){
-        alle_bakterien<-alle_bakterien[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2]
-        helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2]
-      }
-      
-      if(length(helper_neu)>0){
-        all_years<-format(helper_neu,"%Y")
-        alle_bakterien_table<-table(alle_bakterien,all_years)
+      if(!is.null(input$trend2.2)&&!is.null(input$trend3)){
+        if(input$column4b=="dd.mm.yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years<-unique(format(helper1,"%Y"))
+
+        alle_bakterien<-input2$RES_ERREGER
+        alle_bakterien<-alle_bakterien[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2]
+        helper_neu<-helper1[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2]
         
-        #alle_bakterien_table<-alle_bakterien_table[rowSums(alle_bakterien_table>30)==length(alle_bakterien_table[1,]),]
-        #for(laenge in 1:length(alle_bakterien_table[1,])){
-        #  alle_bakterien_table<-alle_bakterien_table[alle_bakterien_table[,laenge]>30,]
-        #}
-        #bakterien_helper<-row.names(alle_bakterien_table)
-        bakterien_helper<-row.names(alle_bakterien_table)[rowSums(alle_bakterien_table>30)==length(alle_bakterien_table[1,])]
-        if(length(bakterien_helper)>0){
-          selectInput('trend2',label = "Species",choices = c(bakterien_helper))
+        if(length(helper_neu)>0){
+          all_years<-format(helper_neu,"%Y")
+          alle_bakterien_table<-table(alle_bakterien,all_years)
+          bakterien_helper<-row.names(alle_bakterien_table)[rowSums(alle_bakterien_table>=30)!=0]
+          
+          if(length(bakterien_helper)>0){
+            pickerInput('trend2',label = "Spezies",choices = c(bakterien_helper),
+                        options = list(`none-selected-text` = "Nothing selected"),multiple=FALSE)
+          }else{
+            pickerInput('trend2',label = "Spezies",choices = NULL,
+                        options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
+          }
         }else{
-          selectInput('trend2',label = "Species",choices = c("Insufficient number of cases"))
+          pickerInput('trend2',label = "Spezies",choices = NULL,
+                      options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
         }
       }else{
-        selectInput('trend2',label = "Species",choices = c("Insufficient number of cases"))
+        pickerInput('trend2',label = "Spezies",choices = NULL,
+                    options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
       }
       
     })
     
     output$trendUI3.3<-renderUI({
-      if(input$trend2!="Insufficient number of cases"){
+      if(!is.null(input$trend2)&!is.null(input$trend2.2)&&!is.null(input$trend3)){
+        #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        if(input$column4b=="dd.mm.yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years<-unique(format(helper1,"%Y"))
+
         input_filter<-input2
-        if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
-          input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
-          input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
-          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2!="All"&&input$trend3!="All"){
-          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-        }
+        input_filter<-input_filter[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2,]
+        helper_neu<-helper1[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2]
+        
         all_years<-format(helper_neu,"%Y")
         
         temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
@@ -1434,18 +1739,40 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         temp_ab_namen_final<-unique(temp_ab_namen_final)
         temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
+
+        temp_ab_namen_final<-as.vector(unique(temp_ab_namen_final))
+        if(length(temp_ab_namen_final)>0){
+          temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
+          
+          pickerInput('trend2.3',label = "Antimicrobial",choices = c(temp_ab_namen_final),
+                      options = list(`actions-box` = TRUE,
+                                     `deselect-all-text` = "Reset",
+                                     `select-all-text` = "Select all",
+                                     `none-selected-text` = "Nothing selected"),multiple=TRUE)
+        }else{
+          pickerInput('trend2.3',label = "Antimicrobial",choices = NULL,
+                      options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
+        }
         
-        selectInput('trend2.3',label = "Antimicrobial agent",choices = c("All",temp_ab_namen_final))
       }else{
-        selectInput('trend2.3',label = "Antimicrobial agent",choices = c("Insufficient number of cases"))
+        pickerInput('trend2.3',label = "Antimicrobial",choices = NULL,
+                    options = list(`none-selected-text` = "Insufficient number of cases"),multiple=FALSE)
       }
     })
     
-    output$trendUI5<-renderUI({actionButton('do_trend',"Start analysis",class = "btn-primary")})
+    output$trendUI5<-renderUI({actionButton('do_trend',"Start analysis",class = "btn-primary",disabled=T)})
     
-    output$trendUI6<-renderUI({downloadButton('do_trend_xlsx',"xlsx export")})
+    output$trendUI6<-renderUI({downloadButton('do_trend_xlsx',"xlsx export",disabled=T)})
     
-    
+    observe({
+      if(!is.null(input$trend2.3)){
+        shinyjs::enable("do_trend")
+        shinyjs::enable("do_trend_xlsx")
+      }else{
+        shinyjs::disable("do_trend")
+        shinyjs::disable("do_trend_xlsx")
+      }
+    })
     
     
     
@@ -1453,8 +1780,14 @@ The application is not a medical device according to the Medical Devices Act or 
     
 
     observeEvent(input$do_erregerstat,{
+      updateTabsetPanel(session,"main",
+                        selected="Pathogen statistics")
       progress <- shiny::Progress$new()
       progress$set(message = "Generate pathogen statistics", value = 0)
+      
+      if(input$erregerstat3c==T){
+        input2<-input2[input2$X_STATUS>0,]
+      }
       
       #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
@@ -1500,232 +1833,97 @@ The application is not a medical device according to the Medical Devices Act or 
         helper1statistik_e<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
       }
       
-      if(input$erregerstat2.2=="All"){
-        input3<-input2[format(helper1statistik_e,"%Y")==input$erregerstat1,]
-      }else{
-        input3<-input2[format(helper1statistik_e,"%Y")==input$erregerstat1&input2$ORD_MATERIAL==input$erregerstat2.2,]
-      }
+      input3<-input2[format(helper1statistik_e,"%Y")%in%input$erregerstat1&input2$ORD_MATERIAL%in%input$erregerstat2.2,]
+      
       stat_fachbereich<-input$erregerstat3
       stat_material<-input$erregerstat2.2
-
-      if(input$erregerstat3=="All"){#alle Fachbereiche
-        ab_spalten<-grep("_",names(input3),invert = T)
-        
-        if(input$erregerstat2.2=="All"){##alle materialien
-          table_fach_bak<-as.data.frame(cbind(names(table(input3$RES_ERREGER)),
-                                              table(input3$RES_ERREGER,input3$ORD_MATERIAL)))
-          row.names(table_fach_bak)<-NULL
-          names(table_fach_bak)[1]<-"Species"
-          for(i in 2:length(table_fach_bak[1,])){
-            table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
-          }
-          table_fach_bak$Sum<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
-          table_fach_bak<-table_fach_bak[order(table_fach_bak$Sum,decreasing = T),]
-          table_fach_bak_colsums<-c()
-          for(z in 2:length(table_fach_bak[1,])){
-            table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
-          }
-          
-          output$text_erregerstat2<-renderText({NULL})
-          if(input$erregerstat3b=="No"){
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-            output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                       extensions = 'Buttons', options = list(
-                                                                         dom = 'Blfrtip',
-                                                                         buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                         columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                             server=F)
-          }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak$Sum>=30,]
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-            output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                       extensions = 'Buttons', options = list(
-                                                                         dom = 'Blfrtip',
-                                                                         buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                         columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                             server=F)
-          }
-        }else{
-          table_fach_bak<-as.data.frame(cbind(names(table(input3$RES_ERREGER[input3$ORD_MATERIAL==input$erregerstat2.2])),
-                                              table(input3$RES_ERREGER[input3$ORD_MATERIAL==input$erregerstat2.2],input3$ORD_MATERIAL[input3$ORD_MATERIAL==input$erregerstat2.2])))
-          row.names(table_fach_bak)<-NULL
-          names(table_fach_bak)[1]<-"Species"
-          for(i in 2:length(table_fach_bak[1,])){
-            table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
-          }
-          table_fach_bak<-table_fach_bak[order(table_fach_bak[,2],decreasing = T),]
-          table_fach_bak_colsums<-c()
-          for(z in 2:length(table_fach_bak[1,])){
-            table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
-          }
-          
-          output$text_erregerstat2<-renderText({NULL})
-          if(input$erregerstat3b=="No"){
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-          output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                     extensions = 'Buttons', options = list(
-                                                                       dom = 'Blfrtip',
-                                                                       buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                     columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                           server=F
-          )
-          }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak[,2]>=30,]
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                       extensions = 'Buttons', options = list(
-                                                                         dom = 'Blfrtip',
-                                                                         buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                         columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                             server=F
-            )
-          }
-        }
+      
+      ab_spalten<-grep("_",names(input3),invert = T)
+      table_fach_bak<-as.data.frame(cbind(names(table(input3$RES_ERREGER[input3$ORD_MATERIAL%in%input$erregerstat2.2&input3$ORD_FACHBEREICH%in%input$erregerstat3])),
+                                          table(input3$RES_ERREGER[input3$ORD_MATERIAL%in%input$erregerstat2.2&input3$ORD_FACHBEREICH%in%input$erregerstat3],input3$ORD_MATERIAL[input3$ORD_MATERIAL%in%input$erregerstat2.2&input3$ORD_FACHBEREICH%in%input$erregerstat3])))
+      row.names(table_fach_bak)<-NULL
+      names(table_fach_bak)[1]<-"Species"
+      for(i in 2:length(table_fach_bak[1,])){
+        table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
       }
-      if(input$erregerstat3!="All"){#alle Fachbereiche
-        ab_spalten<-grep("_",names(input3),invert = T)
-        if(input$erregerstat2.2=="All"){##alle materialien
-          table_fach_bak<-as.data.frame(cbind(names(table(input3$RES_ERREGER[input3$ORD_FACHBEREICH==input$erregerstat3])),
-                                              table(input3$RES_ERREGER[input3$ORD_FACHBEREICH==input$erregerstat3],input3$ORD_MATERIAL[input3$ORD_FACHBEREICH==input$erregerstat3])))
-          row.names(table_fach_bak)<-NULL
-          names(table_fach_bak)[1]<-"Species"
-          for(i in 2:length(table_fach_bak[1,])){
-            table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
-          }
-          table_fach_bak$Sum<-0
-          for(z in 1:length(table_fach_bak[,1])){
-            table_fach_bak$Sum[z]<-sum(table_fach_bak[z,c(2:length(table_fach_bak[1,]))])
-          }
-          table_fach_bak<-table_fach_bak[order(table_fach_bak$Sum,decreasing = T),]
-          table_fach_bak_colsums<-c()
-          for(z in 2:length(table_fach_bak[1,])){
-            table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
-          }
+      if(length(input$erregerstat2.2)>1){
+        table_fach_bak$Sum<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
+      }else{
+        table_fach_bak$Sum<-table_fach_bak[,2]
+      }
+      table_fach_bak<-table_fach_bak[order(table_fach_bak[,length(table_fach_bak[1,])],decreasing = T),]
+      table_fach_bak_colsums<-sum(table_fach_bak[,length(table_fach_bak[1,])])
+      
+      output$text_erregerstat2<-renderText({NULL})
+      
+      if(input$erregerstat3b==FALSE){
+        output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak,rownames=F,
+                                                                   #caption = htmltools::tags$caption(paste0("Klinik/Fachbereich: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                   extensions = 'Buttons', options = list(
+                                                                     dom = 'Blfrtip',
+                                                                     buttons = c('csv', 'excel', 'print'),
+                                                                     columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak[1,])-1)))))),
+                                                         server=F
+        )
+        
+        if(nrow(table_fach_bak)>0){
+          table_fach_bak$Relative<-format(round(100*table_fach_bak[,length(table_fach_bak[1,])]/table_fach_bak_colsums,digits=1),nsmall=1)
+          table_fach_bak<-table_fach_bak[,c("Species","Sum","Relative")]
+          table_fach_bak$KI<-"-"
           
-          output$text_erregerstat2<-renderText({NULL})
-          if(input$erregerstat3b=="No"){
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
+          for(j in 1:length(table_fach_bak[,1])){
+            if(table_fach_bak[j,2]>0){
+              stat_help1<-format(round(100*binom.test(x=table_fach_bak$Sum[j],n=table_fach_bak_colsums,
+                                                      p=table_fach_bak$Sum[j]/table_fach_bak_colsums)$conf.int[1],1),nsmall=1)
+              stat_help2<-format(round(100*binom.test(x=table_fach_bak$Sum[j],n=table_fach_bak_colsums,
+                                                      p=table_fach_bak$Sum[j]/table_fach_bak_colsums)$conf.int[2],1),nsmall=1)
+              table_fach_bak$KI[j]<-paste0(stat_help1," - ",stat_help2)          
             }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-          output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+          }
+          names(table_fach_bak)<-c("Species","N","N %","95% CI")
+          output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak,rownames=F,
+                                                                     #caption = htmltools::tags$caption(paste0("Klinik/Fachbereich: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                      extensions = 'Buttons', options = list(
                                                                        dom = 'Blfrtip',
-                                                                       buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                       columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
+                                                                       buttons = c('csv', 'excel', 'print'),
+                                                                       columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak[1,])-1)))))),
                                                            server=F
           )
-          }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak$Sum>=30,]
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
+        }
+      }else{
+        table_fach_bak<-table_fach_bak[table_fach_bak$Sum>=30,]  
+        output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak,rownames=F,
+                                                                   #caption = htmltools::tags$caption(paste0("Klinik/Fachbereich: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+                                                                   extensions = 'Buttons', options = list(
+                                                                     dom = 'Blfrtip',
+                                                                     buttons = c('csv', 'excel', 'print'),
+                                                                     columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak[1,])-1)))))),
+                                                         server=F
+        )
+        
+        if(nrow(table_fach_bak)>0){
+          table_fach_bak$Relative<-format(round(100*table_fach_bak[,length(table_fach_bak[1,])]/table_fach_bak_colsums,digits=1),nsmall=1)
+          table_fach_bak<-table_fach_bak[,c("Species","Sum","Relative")]
+          table_fach_bak$KI<-"-"
+          
+          for(j in 1:length(table_fach_bak[,1])){
+            if(table_fach_bak[j,2]>0){
+              stat_help1<-format(round(100*binom.test(x=table_fach_bak$Sum[j],n=table_fach_bak_colsums,
+                                                      p=table_fach_bak$Sum[j]/table_fach_bak_colsums)$conf.int[1],1),nsmall=1)
+              stat_help2<-format(round(100*binom.test(x=table_fach_bak$Sum[j],n=table_fach_bak_colsums,
+                                                      p=table_fach_bak$Sum[j]/table_fach_bak_colsums)$conf.int[2],1),nsmall=1)
+              table_fach_bak$KI[j]<-paste0(stat_help1," - ",stat_help2)          
             }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-            output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                       extensions = 'Buttons', options = list(
-                                                                         dom = 'Blfrtip',
-                                                                         buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                         columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                             server=F
-            )
           }
-        }else{
-          table_fach_bak<-as.data.frame(cbind(names(table(input3$RES_ERREGER[input3$ORD_MATERIAL==input$erregerstat2.2&input3$ORD_FACHBEREICH==input$erregerstat3])),
-                                              table(input3$RES_ERREGER[input3$ORD_MATERIAL==input$erregerstat2.2&input3$ORD_FACHBEREICH==input$erregerstat3],input3$ORD_MATERIAL[input3$ORD_MATERIAL==input$erregerstat2.2&input3$ORD_FACHBEREICH==input$erregerstat3])))
-          row.names(table_fach_bak)<-NULL
-          names(table_fach_bak)[1]<-"Species"
-          for(i in 2:length(table_fach_bak[1,])){
-            table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
-          }
-          table_fach_bak<-table_fach_bak[order(table_fach_bak[,2],decreasing = T),]
-          table_fach_bak_colsums<-c()
-          for(z in 2:length(table_fach_bak[1,])){
-            table_fach_bak_colsums[(z-1)]<-sum(table_fach_bak[,z])
-          }
-
-          output$text_erregerstat2<-renderText({NULL})
-          if(input$erregerstat3b=="No"){
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-          output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                     caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
+          names(table_fach_bak)<-c("Species","N","N %","95% CI")
+          output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak,rownames=F,
+                                                                     #caption = htmltools::tags$caption(paste0("Klinik/Fachbereich: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
                                                                      extensions = 'Buttons', options = list(
                                                                        dom = 'Blfrtip',
-                                                                       buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                      list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                       columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
+                                                                       buttons = c('csv', 'excel', 'print'),
+                                                                       columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak[1,])-1)))))),
                                                            server=F
           )
-          }else{
-            table_fach_bak<-table_fach_bak[table_fach_bak[,2]>=30,]          
-            table_fach_bak_backup<-table_fach_bak
-            for(z in 1:length(table_fach_bak_colsums)){
-              table_fach_bak_backup[,(z+1)]<-format(round(100*table_fach_bak[,(z+1)]/table_fach_bak_colsums[z],digits=1),nsmall=1)
-            }
-            table_fach_bak<-table_fach_bak_backup
-            names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]<-paste0(names(table_fach_bak_backup)[2:length(table_fach_bak[1,])]," N %")
-            
-            output$datatable_erregerstat1 <- renderDataTable(datatable(table_fach_bak_backup,rownames=F,
-                                                                       caption = htmltools::tags$caption(paste0("Clinic/Unit: ",stat_fachbereich), style="color:rgb(49,126,172);font-size: 14pt"),
-                                                                       extensions = 'Buttons', options = list(
-                                                                         dom = 'Blfrtip',
-                                                                         buttons = list(list(extend="csv",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="excel",filename="GEFAAR_Pathogen_Statistics"),
-                                                                                        list(extend="print",filename="GEFAAR_Pathogen_Statistics")),
-                                                                         columnDefs = list(list(className = 'dt-right', targets = c(1:(length(table_fach_bak_backup[1,])-1)))))),
-                                                             server=F
-            )
-          }
         }
       }
       progress$close()
@@ -1734,8 +1932,14 @@ The application is not a medical device according to the Medical Devices Act or 
     
     
     observeEvent(input$do_statistik,{
+      updateTabsetPanel(session,"main",
+                        selected="Resistance statistics")
       progress <- shiny::Progress$new()
       progress$set(message = "Generate resistance statistics", value = 0)
+      
+      if(input$statistik3c==T){
+        input2<-input2[input2$X_STATUS>0,]
+      }
       
       #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
@@ -1792,27 +1996,10 @@ The application is not a medical device according to the Medical Devices Act or 
         helper1statistik<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
       }
       
-      if(input$statistik2.2=="All"){
-        input3<-input2[format(helper1statistik,"%Y")==input$statistik1,]
-      }else{
-        input3<-input2[format(helper1statistik,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2,]
-      }
-      
+      input3<-input2[format(helper1statistik,"%Y")%in%input$statistik1&input2$ORD_MATERIAL%in%input$statistik2.2,]
       
       alle_bakterien<-input2$RES_ERREGER
-      if(input$statistik2.2=="All"&&input$statistik3=="All"){##alle fachbereiche, alle materialien
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1]
-      }
-      if(input$statistik2.2!="All"&&input$statistik3=="All"){##alle fachbereiche
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2]
-      }
-      if(input$statistik2.2=="All"&&input$statistik3!="All"){##alle materialien
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3]
-      }
-      if(input$statistik2.2!="All"&&input$statistik3!="All"){
-        alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3&input2$ORD_MATERIAL==input$statistik2.2]
-      }
-      
+      alle_bakterien<-alle_bakterien[format(helper1,"%Y")%in%input$statistik1&input2$ORD_FACHBEREICH%in%input$statistik3&input2$ORD_MATERIAL%in%input$statistik2.2]
       alle_bakterien_table<-table(alle_bakterien)
       bakterien_helper<-names(alle_bakterien_table)[as.numeric(alle_bakterien_table)>30]
       if(length(bakterien_helper)==0){
@@ -1859,68 +2046,12 @@ The application is not a medical device according to the Medical Devices Act or 
       
       
       
-      
-
-      ############################################
-      zusammenfassung_erstellen<-"No"
-      if(zusammenfassung_erstellen=="Yes"){
-        shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate summary clinics/units","<br>"), add = TRUE)  
-
-        ab_spalten<-grep("_",names(input3),invert = T)
-        temp<-cbind(input3$ORD_FACHBEREICH,input3$RES_ERREGER,input3[,ab_spalten])
-        table_fach_bak<-as.data.frame(cbind(names(table(input3$ORD_FACHBEREICH)),
-                                            table(input3$ORD_FACHBEREICH,input3$RES_ERREGER)))
-        row.names(table_fach_bak)<-NULL
-        names(table_fach_bak)[1]<-"Clinic/Unit"
-        for(i in 2:length(table_fach_bak[1,])){
-          table_fach_bak[,i]<-as.numeric(table_fach_bak[,i])
-        }
-        table_fach_bak$Sum<-rowSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
-        helper<-table_fach_bak[1,]
-        helper[1,1]<-"Sum"
-        helper[1,2:length(helper[1,])]<-colSums(table_fach_bak[,c(2:length(table_fach_bak[1,]))])
-        table_fach_bak<-rbind(table_fach_bak,helper)
-
-        shinyjs::html("text", paste0("&nbsp&nbsp&nbspGenerate summary antimicrobial agents","<br>"), add = TRUE)  
-        
-        temp2<-temp
-        ab_names<-names(input3)[ab_spalten]
-        for(i in ab_names){
-          temp2[temp2[,i==names(temp2)]!="-",i==names(temp2)]<-i
-          temp2[temp2[,i==names(temp2)]=="-",i==names(temp2)]<-NA
-        }
-        
-        names(temp2)[1:2]<-c("ORD_FACHBEREICH","RES_ERREGER")
-        table_anti_bak<-data.frame(Antibiotikum=ab_names)
-        erreger<-names(table(temp2$RES_ERREGER))
-        for(i in 1:length(erreger)){
-          table_anti_bak<-cbind(table_anti_bak,V1=0)
-        }
-        names(table_anti_bak)<-c("Antimicrobial",erreger)
-        for(i in erreger){
-          for(j in ab_names){
-            table_anti_bak[table_anti_bak$Antibiotikum==j,names(table_anti_bak)==i]<-sum(temp2[temp2$RES_ERREGER==i,names(temp2)==j]==j,na.rm=T)
-          }
-        }
-        
-        table_anti_bak$Sum<-rowSums(table_anti_bak[,c(2:length(table_anti_bak[1,]))])
-        helper<-table_anti_bak[1,]
-        helper[1,1]<-"Sum"
-        helper[1,2:length(helper[1,])]<-colSums(table_anti_bak[,c(2:length(table_anti_bak[1,]))])
-        table_anti_bak<-rbind(table_anti_bak,helper)
-
-      }
-      
       #########################################
       ##Statistik
       ########################################
       shinyjs::html("text", paste0("<br>","&nbsp&nbsp&nbspGenerate resistance statistics","<br>"), add = TRUE) 
 
-      if(input$statistik3!="All"){##nur ausgewählte Kliniken/Fachbereiche
-        input4<-input3[input3$ORD_FACHBEREICH==input$statistik3,]
-      }else{
-        input4<-input3
-      }
+      input4<-input3[input3$ORD_FACHBEREICH%in%input$statistik3,]
 
       #helper4statistik<-as.Date(input4$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
@@ -1986,13 +2117,13 @@ The application is not a medical device according to the Medical Devices Act or 
       
       output$text_zusammenfassung0<-renderText({NULL})
       
-      if(input$statistik2!="All"){
+      #if(input$statistik2!="All"){
         bakterien_update<-bakterien_helper[bakterien_helper%in%input$statistik2]
         eintrag_laenge_update<-eintrag_laenge[bakterien_helper%in%input$statistik2]
-      }else{
-        bakterien_update<-bakterien_helper
-        eintrag_laenge_update<-eintrag_laenge
-      }
+      #}else{
+      #  bakterien_update<-bakterien_helper
+      #  eintrag_laenge_update<-eintrag_laenge
+      #}
 
       output$datatables_statistik <- renderUI({
         datatables_statistik_output_list <- lapply(1:length(bakterien_update), function(k) {
@@ -2079,6 +2210,10 @@ The application is not a medical device according to the Medical Devices Act or 
         progress <- shiny::Progress$new()
         progress$set(message = "Preparing data for xlsx report", value = 0)
         
+        if(input$statistik3c==T){
+          input2<-input2[input2$X_STATUS>0,]
+        }
+        
         #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
         if(input$column4b=="dd.mm.yy"){
           helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
@@ -2132,16 +2267,8 @@ The application is not a medical device according to the Medical Devices Act or 
           helper1statistik<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
         }
         
-        if(input$statistik2.2=="All"){
-          input3<-input2[format(helper1statistik,"%Y")==input$statistik1,]
-        }else{
-          input3<-input2[format(helper1statistik,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2,]
-        }
-        if(input$statistik3!="All"){##nur ausgewählte Kliniken/Fachbereiche
-          input4<-input3[input3$ORD_FACHBEREICH==input$statistik3,]
-        }else{
-          input4<-input3
-        }
+        input3<-input2[format(helper1statistik,"%Y")%in%input$statistik1&input2$ORD_MATERIAL%in%input$statistik2.2,]
+        input4<-input3[input3$ORD_FACHBEREICH%in%input$statistik3,]
         
         #helper4statistik<-as.Date(input4$ORD_DATUM,format = "%d.%m.%Y")
         if(input$column4b=="dd.mm.yy"){
@@ -2164,18 +2291,7 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         
         alle_bakterien<-input2$RES_ERREGER
-        if(input$statistik2.2=="All"&&input$statistik3=="All"){##alle fachbereiche, alle materialien
-          alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1]
-        }
-        if(input$statistik2.2!="All"&&input$statistik3=="All"){##alle fachbereiche
-          alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_MATERIAL==input$statistik2.2]
-        }
-        if(input$statistik2.2=="All"&&input$statistik3!="All"){##alle materialien
-          alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3]
-        }
-        if(input$statistik2.2!="All"&&input$statistik3!="All"){
-          alle_bakterien<-alle_bakterien[format(helper1,"%Y")==input$statistik1&input2$ORD_FACHBEREICH==input$statistik3&input2$ORD_MATERIAL==input$statistik2.2]
-        }
+        alle_bakterien<-alle_bakterien[format(helper1,"%Y")%in%input$statistik1&input2$ORD_FACHBEREICH%in%input$statistik3&input2$ORD_MATERIAL%in%input$statistik2.2]
         
         alle_bakterien_table<-table(alle_bakterien)
         bakterien_helper<-names(alle_bakterien_table)[as.numeric(alle_bakterien_table)>30]
@@ -2239,17 +2355,16 @@ The application is not a medical device according to the Medical Devices Act or 
         table_export<-data.frame(V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,V6=NA,V7=NA)
         table_export[2,1]<-"Resistance statistics"
         table_export[3,1]<-"Year"
-        table_export[3,2]<-input$statistik1
+        table_export[3,2]<-paste0(input$statistik1,collapse = " + ")
         table_export[4,1]<-"Specimen"
-        table_export[4,2]<-input$statistik2.2
+        table_export[4,2]<-paste0(input$statistik2.2,collapse = " + ")
         table_export[5,1]<-"Clinic/Unit"
-        table_export[5,2]<-input$statistik3
-        table_export[6,1]<-"Species"
-        table_export[6,2]<-input$statistik2
-        
-        insertImage(wb,sheet="Data sheet antimicrobial agents",file = "www/IMI.png",
-                    height = 0.516, width = 0.648,
-                    startRow = 1,startCol = 7)
+        table_export[5,2]<-paste0(input$statistik3,collapse = " + ")
+        table_export[6,1]<-"Patient isolate"
+        table_export[6,2]<-paste0(ifelse(input$statistik3c==F,"All","Just first"))
+        table_export[7,1]<-"Species"
+        table_export[7,2]<-paste0(input$statistik2,collapse = ", ")
+
         insertImage(wb,sheet="Data sheet antimicrobial agents",file = "www/UKM.png",
                     height = 0.516, width = 0.6,
                     startRow = 1,startCol = 1)
@@ -2271,23 +2386,54 @@ The application is not a medical device according to the Medical Devices Act or 
                  gridExpand = T,style=all_white)
         
         addStyle(wb,sheet="Data sheet antimicrobial agents",rows=2,cols=1:7,style = ueberschrift,stack=T)
-        addStyle(wb,sheet="Data sheet antimicrobial agents",rows=c(3:6),cols=1,style = bold,stack=T)
-        addStyle(wb,sheet="Data sheet antimicrobial agents",rows=c(6),cols=1:7,style = linie,
+        addStyle(wb,sheet="Data sheet antimicrobial agents",rows=c(3:7),cols=1,style = bold,stack=T)
+        addStyle(wb,sheet="Data sheet antimicrobial agents",rows=c(7),cols=1:7,style = linie,
                  gridExpand = T, stack=T)
+
+        zeilenbruch <- createStyle(wrapText = TRUE)
+        addStyle(wb,sheet="Data sheet antimicrobial agents",zeilenbruch,rows=5,cols=2,stack=T)
+        addStyle(wb,sheet="Data sheet antimicrobial agents",zeilenbruch,rows=7,cols=2,stack=T)
+        
+        topalign <- createStyle(valign="top")
         
         setColWidths(wb,sheet="Data sheet antimicrobial agents",cols = c(1:6),widths = "auto")
-        setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(2,7),heights = 30)
-        setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = 1,heights = 43)
         
+        maxlength<-max(strwidth(table_export[3,2], unit = "in") * 11.2838 ,
+                       strwidth(table_export[4,2], unit = "in") * 11.2838 ,
+                       strwidth(table_export[5,2], unit = "in") * 11.2838 ,
+                       strwidth(table_export[6,2], unit = "in") * 11.2838 )
+        
+        setColWidths(wb,sheet="Data sheet antimicrobial agents",cols = c(2),widths = min(120,maxlength))
+        
+        if((strwidth(table_export[3,2], unit = "in") * 11.2838)>120){
+          setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(3),
+                        heights = c(13+11.05*(floor((strwidth(table_export[3,2], unit = "in") * 11.2838)/120))))
+          addStyle(wb,sheet="Data sheet antimicrobial agents",topalign,rows=3,cols=1,stack=T)
+        }
+        if((strwidth(table_export[4,2], unit = "in") * 11.2838)>120){
+          setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(4),
+                        heights = c(13+11.05*(floor((strwidth(table_export[4,2], unit = "in") * 11.2838)/120))))
+          addStyle(wb,sheet="Data sheet antimicrobial agents",topalign,rows=4,cols=1,stack=T)
+        }        
+        if((strwidth(table_export[5,2], unit = "in") * 11.2838)>120){
+          setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(5),
+                        heights = c(13+11.05*(floor((strwidth(table_export[5,2], unit = "in") * 11.2838)/120))))
+          addStyle(wb,sheet="Data sheet antimicrobial agents",topalign,rows=5,cols=1,stack=T)
+        }        
+        if((strwidth(table_export[7,2], unit = "in") * 11.2838)>120){
+          setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(7),
+                        heights = c(13+11.05*(floor((strwidth(table_export[7,2], unit = "in") * 11.2838)/120))))
+          addStyle(wb,sheet="",topalign,rows=6,cols=1,stack=T)
+        }
+        
+        setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(2,8),heights = 30)
+        setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = 1,heights = 43)
         
         addWorksheet(wb,sheetName = "Figures antimicrobial agents")
         
         addStyle(wb,sheet="Figures antimicrobial agents",rows=c(1:5000),cols=1:27,
                  gridExpand = T,style=all_white)
         
-        insertImage(wb,sheet="Figures antimicrobial agents",file = "www/IMI.png",
-                    height = 0.516, width = 0.648,
-                    startRow = 1,startCol = 8)
         insertImage(wb,sheet="Figures antimicrobial agents",file = "www/UKM.png",
                     height = 0.516, width = 0.6,
                     startRow = 1,startCol = 1)
@@ -2295,13 +2441,13 @@ The application is not a medical device according to the Medical Devices Act or 
         
         
         ##############################################
-        if(input$statistik2!="All"){
+        #if(input$statistik2!="All"){
           bakterien_update<-bakterien_helper[bakterien_helper%in%input$statistik2]
           eintrag_laenge_update<-eintrag_laenge[bakterien_helper%in%input$statistik2]
-        }else{
-          bakterien_update<-bakterien_helper
-          eintrag_laenge_update<-eintrag_laenge
-        }
+        #}else{
+        #  bakterien_update<-bakterien_helper
+        #  eintrag_laenge_update<-eintrag_laenge
+        #}
         
         beginn<-8
         table_export_all<-data.frame(V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,V6=NA,V7=NA)
@@ -2406,10 +2552,35 @@ The application is not a medical device according to the Medical Devices Act or 
     
     
     observeEvent(input$do_trend,{
+      updateTabsetPanel(session,"main",
+                        selected="Trend analysis")
       progress <- shiny::Progress$new()
       progress$set(message = "Generate trend analysis", value = 0)
       
-      helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$trend3c==T){
+        input2<-input2[input2$X_STATUS>0,]
+      }
+      
+      #helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+      }
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      }
+      if(input$column4b=="mm/dd/yy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+      }
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
+      
       years<-unique(format(helper1,"%Y"))
       
       shinyjs::html("text", paste0("<br>Trend analysis is launched.<br><br>"), add = FALSE)
@@ -2463,22 +2634,9 @@ The application is not a medical device according to the Medical Devices Act or 
         }
         
         input_filter<-input2
-        if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
-          input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
-          input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
-          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
-        }
-        if(input$trend2.2!="All"&&input$trend3!="All"){
-          input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-          helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-        }
+        input_filter<-input_filter[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2,]
+        helper_neu<-helper1[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2]
+        
         all_years<-format(helper_neu,"%Y")
         
         if(length(unique(all_years))==1){
@@ -2487,7 +2645,7 @@ The application is not a medical device according to the Medical Devices Act or 
           return()
         }
         
-        if(input$trend2.3=="All"){##Alle möglichen AB
+        #if(input$trend2.3=="All"){##Alle möglichen AB
           temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
           temp_ab<-temp_ab[temp_ab>0]
           temp_ab_namen<-names(temp_ab)
@@ -2504,11 +2662,11 @@ The application is not a medical device according to the Medical Devices Act or 
           temp_ab_namen_final<-unique(temp_ab_namen_final)
           temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
           input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%temp_ab_namen_final))]
-        }
-        if(input$trend2.3!="All"){
-          input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
-          temp_ab_namen_final<-input$trend2.3
-        }
+        #}
+        #if(input$trend2.3!="All"){
+        #  input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
+        #  temp_ab_namen_final<-input$trend2.3
+        #}
         
         output$text_trend2<-renderText({NULL})
         
@@ -2615,6 +2773,10 @@ The application is not a medical device according to the Medical Devices Act or 
         progress <- shiny::Progress$new()
         progress$set(message = "Preparing data for xlsx report", value = 0)
         
+        if(input$trend3c==T){
+          input2<-input2[input2$X_STATUS>0,]
+        }
+        
         helper1<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
         years<-unique(format(helper1,"%Y"))
         
@@ -2653,25 +2815,12 @@ The application is not a medical device according to the Medical Devices Act or 
           }
           
           input_filter<-input2
-          if(input$trend2.2=="All"&&input$trend3=="All"){##alle fachbereiche, alle materialien
-            input_filter<-input_filter[input2$RES_ERREGER==input$trend2,]
-            helper_neu<-helper1[input2$RES_ERREGER==input$trend2]
-          }
-          if(input$trend2.2!="All"&&input$trend3=="All"){##alle fachbereiche
-            input_filter<-input_filter[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-            helper_neu<-helper1[input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-          }
-          if(input$trend2.2=="All"&&input$trend3!="All"){##alle materialien
-            input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2,]
-            helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$RES_ERREGER==input$trend2]
-          }
-          if(input$trend2.2!="All"&&input$trend3!="All"){
-            input_filter<-input_filter[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2,]
-            helper_neu<-helper1[input2$ORD_FACHBEREICH==input$trend3&input2$ORD_MATERIAL==input$trend2.2&input2$RES_ERREGER==input$trend2]
-          }
+          input_filter<-input_filter[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2,]
+          helper_neu<-helper1[input2$ORD_FACHBEREICH%in%input$trend3&input2$ORD_MATERIAL%in%input$trend2.2&input2$RES_ERREGER%in%input$trend2]
+          
           all_years<-format(helper_neu,"%Y")
           
-          if(input$trend2.3=="All"){##Alle möglichen AB
+          #if(input$trend2.3=="All"){##Alle möglichen AB
             temp_ab<-apply(input_filter[,grep("_",names(input_filter),fixed=T,invert = T)],2,function(x){sum(x!="-")})
             temp_ab<-temp_ab[temp_ab>0]
             temp_ab_namen<-names(temp_ab)
@@ -2688,11 +2837,11 @@ The application is not a medical device according to the Medical Devices Act or 
             temp_ab_namen_final<-unique(temp_ab_namen_final)
             temp_ab_namen_final<-temp_ab_namen_final[order(temp_ab_namen_final)]
             input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%temp_ab_namen_final))]
-          }
-          if(input$trend2.3!="All"){
-            input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
-            temp_ab_namen_final<-input$trend2.3
-          }
+          #}
+          #if(input$trend2.3!="All"){
+          #  input_filter<-input_filter[,c(grep("_",names(input_filter),fixed=T),which(names(input_filter)%in%input$trend2.3))]
+          #  temp_ab_namen_final<-input$trend2.3
+          #}
           
           #########################################
           ##Statistik
@@ -2758,9 +2907,6 @@ The application is not a medical device according to the Medical Devices Act or 
           addStyle(wb,sheet="Trend",rows=c(1:5000),cols=1:27,
                    gridExpand = T,style=all_white)
           
-          insertImage(wb,sheet="Trend",file = "www/IMI.png",
-                      height = 0.516, width = 0.648,
-                      startRow = 1,startCol = 7)
           insertImage(wb,sheet="Trend",file = "www/UKM.png",
                       height = 0.516, width = 0.6,
                       startRow = 1,startCol = 1)
@@ -2770,26 +2916,59 @@ The application is not a medical device according to the Medical Devices Act or 
           table_export<-data.frame(V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,V6=NA,V7=NA)
           table_export[2,1]<-"Trend analysis"
           table_export[3,1]<-"Specimen"
-          table_export[3,2]<-input$trend2.2
+          table_export[3,2]<-paste0(input$trend2.2,collapse = " + ")
           table_export[4,1]<-"Clinic/Unit"
-          table_export[4,2]<-input$trend3
-          table_export[5,1]<-"Species"
-          table_export[5,2]<-input$trend2 
-          table_export[6,1]<-"Antimicrobial agent"
-          table_export[6,2]<-input$trend2.3
+          table_export[4,2]<-paste0(input$trend3,collapse = " + ")
+          table_export[5,1]<-"Patient isolate"
+          table_export[5,2]<-paste0(ifelse(input$trend3c==F,"Alle","Ausschließlich 1."))
+          table_export[6,1]<-"Species"
+          table_export[6,2]<-input$trend2 
+          table_export[7,1]<-"Antimicrobial agent"
+          table_export[7,2]<-paste0(input$trend2.3,collapse = ", ")
           
+          
+ 
           writeData(wb,sheet="Trend",table_export,colNames = F,rowNames = F)
           
           addStyle(wb,sheet="Trend",rows=c(1:3600),cols=1:27,gridExpand = T,style=all_white)
           addStyle(wb,sheet="Trend",rows=2,cols=1:7,style = ueberschrift,stack=T)
-          addStyle(wb,sheet="Trend",rows=c(3:6),cols=1,style = bold,stack=T)
-          addStyle(wb,sheet="Trend",rows=c(6),cols=1:7,style = linie,
+          addStyle(wb,sheet="Trend",rows=c(3:7),cols=1,style = bold,stack=T)
+          addStyle(wb,sheet="Trend",rows=c(7),cols=1:7,style = linie,
                    gridExpand = T, stack=T)
           
+          zeilenbruch <- createStyle(wrapText = TRUE)
+          addStyle(wb,sheet="Trend",zeilenbruch,rows=4,cols=2,stack=T)
+          addStyle(wb,sheet="Trend",zeilenbruch,rows=7,cols=2,stack=T)
+          
+          topalign <- createStyle(valign="top")
+          
           setColWidths(wb,sheet="Trend",cols = c(1:5),widths = "auto")
-          setRowHeights(wb,sheet="Trend",rows = c(2,7),heights = 30)
           
+          maxlength<-max(strwidth(table_export[3,2], unit = "in") * 11.2838 ,
+                         strwidth(table_export[4,2], unit = "in") * 11.2838 ,
+                         strwidth(table_export[7,2], unit = "in") * 11.2838 )
           
+          setColWidths(wb,sheet="Trend",cols = c(2),widths = min(120,maxlength))
+          
+          if((strwidth(table_export[3,2], unit = "in") * 11.2838)>120){
+            setRowHeights(wb,sheet="Trend",rows = c(3),
+                          heights = c(13+11.05*(floor((strwidth(table_export[3,2], unit = "in") * 11.2838)/120))))
+            addStyle(wb,sheet="Trend",topalign,rows=3,cols=1,stack=T)
+          }
+          if((strwidth(table_export[4,2], unit = "in") * 11.2838)>120){
+            setRowHeights(wb,sheet="Trend",rows = c(4),
+                          heights = c(13+11.05*(floor((strwidth(table_export[4,2], unit = "in") * 11.2838)/120))))
+            addStyle(wb,sheet="Trend",topalign,rows=4,cols=1,stack=T)
+          }  
+          if((strwidth(table_export[7,2], unit = "in") * 11.2838)>120){
+            setRowHeights(wb,sheet="Trend",rows = c(7),
+                          heights = c(13+11.05*(floor((strwidth(table_export[7,2], unit = "in") * 11.2838)/120))))
+            addStyle(wb,sheet="Trend",topalign,rows=7,cols=1,stack=T)
+          }
+          
+          setRowHeights(wb,sheet="Trend",rows = c(2,8),heights = 30)
+          
+    
           ##############################################
           begin<-8
           export_abbildungen<-data.frame(V1=NA)
@@ -2853,6 +3032,8 @@ The application is not a medical device according to the Medical Devices Act or 
 
     
     observeEvent(input$do_analyse,{
+      updateTabsetPanel(session,"main",
+                        selected="Cluster analyses")
       shinyjs::html("text", paste0("<br>Cluster analyses are launched.<br><br>"), add = FALSE)
       if(input$analysis_type1=="per species"){
         if(input$bak_select=="No" && is.null(input$bak_selected)){
@@ -2879,6 +3060,9 @@ The application is not a medical device according to the Medical Devices Act or 
       ###Eigentliche Analyse###
       #########################
 
+      if(!is.null(input$analysis_type1c)&&input$analysis_type1c==T){
+        input2<-input2[input2$X_STATUS>0,]
+      }
       #helper1cluster<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
         helper1cluster<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
@@ -2899,11 +3083,8 @@ The application is not a medical device according to the Medical Devices Act or 
         helper1cluster<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
       }
       
-      if(input$analysis_type1b=="All"){
-        input3<-input2[format(helper1cluster,"%Y")==input$analysis_type1a,]
-      }else{
-        input3<-input2[format(helper1cluster,"%Y")==input$analysis_type1a&input2$ORD_MATERIAL==input$analysis_type1b,]
-      }
+      input3<-input2[format(helper1bakterien,"%Y")%in%input$analysis_type1a&input2$ORD_MATERIAL%in%input$analysis_type1b,]
+      
       erstes_ab<-length(grep("_",names(input3)))+1
 
       
@@ -2922,7 +3103,28 @@ The application is not a medical device according to the Medical Devices Act or 
           bakterien<-input$bak_selected
         }
         
-        farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+        #farben<-distinctColorPalette(k=length(levels(as.factor(input3$ORD_FACHBEREICH))))
+        farben<-c(c("#3E7C90","#F0D7E2","#E69EBB","#EC952E","#DFBDAB","#E3939A","#E7EFAF","#8CB8BA","#9EBC9F","#6A6BE5","#7081A8","#682DE7","#BDF43C","#C5A4F2","#EFE886",
+                    "#D74785","#6FD775","#71A134","#F146B9","#E43260","#B2729B","#99F390","#BEF2D0","#5C5E54","#B8B04A","#89EFE9","#E45F28","#C5BDF4","#7FEDA8","#AAC9F3",
+                    "#70C3B2","#C6B4C2","#67F548","#BBCB7B","#C5EDF0","#9C3F97","#BAF5B8","#46F1C1","#E2F2DC","#8BEDC3","#F2303A","#E7BB92","#A2B2C8","#9C7ABC","#EFBFDC",
+                    "#B3E669","#4D8BDA","#9DECF2","#E64FE0","#40ACB1","#C0EA8E","#EEED39","#5BF4E3","#4DA477","#EBD28D","#EB81B2","#F0C5F3","#87A3E2","#C4C5B1","#D185DE",
+                    "#E47075","#D5E257","#F09CEA","#A09A76","#D532EA","#CFDCEF","#B28AF3","#92D3EA","#AEB8B5","#E5A1D7","#B062E7","#DD77E8","#89545A","#49EC93","#5AD49D",
+                    "#E5BE44","#D77951","#E7E8E5","#C19A97","#DFDEB5","#EDB9BA","#E86ABE","#89CC80","#5AB1DD","#5D57A6","#772FAE","#54E35B","#9D8232","#E2A762","#CEB1D0",
+                    "#B5E5D9","#8FDC44","#DED5F5","#9E96EE","#E39A7B","#46CFBB","#F3DDC9","#B89BC5","#B5D59E","#4FD6E9",
+                    "#B2AE9D","#DFCCF6","#F1B85D","#C9B083","#CFBBC6","#E59692","#EECB4E","#AD7DF2","#DAE0BB","#DAD686","#E8A72F","#DA68C2","#5DBAA9","#605FDD","#7288A8","#F6EC7F",
+                    "#7867AF","#F4E6C5","#E8ACD2","#9BA5F3","#F2D210","#4FF337","#EA98B4","#7CBC35","#E31F84","#A6B467","#CCD770","#B49730","#5D4CE8","#EF1F52","#DF98E5","#B2B6E8",
+                    "#E5C1B9","#AFED7C","#A2F0E1","#36F5ED","#AA7A52","#269173","#8A8953","#96CBE4","#B1D1F8","#F2BDF0","#8FB3DB","#E760E9","#C880CA","#BC8ECD","#6A26E7","#3C89A3",
+                    "#859F9E","#87B963","#3EC7F3","#F2DEF2","#F0EFF2","#ACF2AE","#9C4953","#E76763","#FA9AEA","#84D4A3","#69DEEA","#803A85","#D9F78C","#CD91B3","#FAA8D3","#D5AAE7",
+                    "#80F9F3","#F2C0A2","#48D6C7","#A37380","#3E7E6E","#2EE8C8","#D8F06F","#92F6AB","#CBF7A4","#A2B84F","#3059AC","#CDC26C","#A46EA9","#7392F2","#7530AE","#7AC7EF",
+                    "#746754","#C362EE","#E44C1C","#5EEE9F","#98D6B8","#426B73","#A6C7C7","#ED85F1","#E552A0","#ADD57B","#C8A2A4","#C4ED40","#CFD023","#BA9DB3","#CCDBC4","#B2F6F2",
+                    "#52C2C9","#D1E9BF","#55F476","#8F615B","#AFF62B","#54A8F8","#A2CF9E","#4B95CC","#EBCD6D","#F09367","#EC872D","#EEF29B","#A82AE8","#C5EDE8","#8789CE","#E298D2",
+                    "#396896","#39EAF1","#F6F5BF","#E434EB","#A26BEB","#C377D8","#8BA682","#F1D5A9","#AEDBC6","#CC9BF2","#F8FAB0","#BB2C30","#37F26A","#DCE8A2","#A7A283","#8AD9DE",
+                    "#8279EB","#66C52E","#43EA7B","#DBF1ED","#C3E1A2","#CD49C0","#E7C2E1","#41B858","#D47C70","#99789D","#F32FCE","#CBEFD5","#DCF9BB","#F6E7AF","#B0BBC0","#EC7CAC",
+                    "#B26392","#5AD5EE","#C3ACF1","#ECAFB5","#A289E6","#F17AC7","#3DB9B5","#9350E7","#557DEF","#D84B77","#EDA687","#70D9D0","#F1B0F3","#C3BFDE","#D4D1CC","#89FA58",
+                    "#F1B877","#A932C2","#8DD8C8","#E396F5","#AABFA0","#C96B3F","#C9A180","#75BCF6","#62DA20","#A63FA1","#7BB3A4","#8AF4CD","#DAE2F4","#EFE2D3","#89B0F4","#DFCBAD",
+                    "#BEC390","#3CEEBB","#A2ED65","#A464BB","#FBDC92","#5DF1DF","#3EB6CC","#93F593","#6EC27B","#F3D2D4","#E47B8B","#7E60C0","#81F685","#9998A6","#A5DDF0","#ED46B8",
+                    "#65AE85","#C2EAF5","#C2EEBB","#2EB07B","#689C4A","#3F86DE","#B2F1CD","#F0B8CB","#81D5EE","#76B5C6","#7BF0B8","#EEF8DD","#D8D150","#D5B675","#E49F51","#F1F060",
+                    "#E9F334","#C46FE5","#87EED9"))[1:length(levels(as.factor(input3$ORD_FACHBEREICH)))]
         names(farben)<-levels(as.factor(input3$ORD_FACHBEREICH))
         
         ##Clustering: Heatmap, Supervised, 1) Klinik/Fachbereich, 2) Resistenz
@@ -4386,7 +4588,30 @@ The application is not a medical device according to the Medical Devices Act or 
       #########################
       ###Eigentliche Analyse###
       #########################
+      if(!is.null(input$download_analysis_type1c)&&input$download_analysis_type1c==T){
+        input2<-input2[input2$X_STATUS>0,]
+      }
+      #helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      if(input$column4b=="dd.mm.yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+      }
+      if(input$column4b=="dd.mm.yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+      }
+      if(input$column4b=="mm/dd/yy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+      }
+      if(input$column4b=="mm/dd/yyyy"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+      }
+      if(input$column4b=="yy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+      }
+      if(input$column4b=="yyyy-mm-dd"){
+        helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+      }
       
+      years_bakterien<-unique(format(helper1bakterien,"%Y"))
       
       plot(x=0.5,y=0.5,col="white",xlim=c(0,1),ylim=c(0,1.5),xlab="",ylab="",xaxt="n",
            yaxt="n",bty="n",main="")
@@ -4394,10 +4619,9 @@ The application is not a medical device according to the Medical Devices Act or 
       text(x=0.5,y=1,Sys.Date(),cex=1.5)
       ukmlogo<-readPNG("www/UKM.png")
       rasterImage(ukmlogo,0.3,0,0.4,0.4)
-      imilogo<-readPNG("www/IMI.png")
-      rasterImage(imilogo,0.6,0,0.7,0.4)
-      
-      
+
+      download_helper1bakterien<-helper1bakterien
+      download_years_bakterien<-years_bakterien
       
       #download_helper1cluster<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
@@ -4419,11 +4643,11 @@ The application is not a medical device according to the Medical Devices Act or 
         download_helper1cluster<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
       }
       
-      if(input$download_analysis_type1b=="All"){
+      #if(input$download_analysis_type1b=="All"){
         input3<-input2[format(download_helper1cluster,"%Y")==input$download_analysis_type1a,]
-      }else{
-        input3<-input2[format(download_helper1cluster,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b,]
-      }
+      #}else{
+      #  input3<-input2[format(download_helper1cluster,"%Y")==input$download_analysis_type1a&input2$ORD_MATERIAL==input$download_analysis_type1b,]
+      #}
       erstes_ab<-length(grep("_",names(input3)))+1
 
       ###########

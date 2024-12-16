@@ -6,14 +6,14 @@ library(stringi)
 shinyUI(fluidPage(
   theme = shinytheme("cerulean"),
   titlePanel(div("GEFAAR: a GEneric Framework for the Analysis of Antimicrobial Resistance",
-                 img(height = 43, width = 54, src = "IMI.png",class="pull-right"),
-                 img(height = 43, width = 20, src = "white.png",class="pull-right"),
+                 #img(height = 43, width = 54, src = "IMI.png",class="pull-right"),
+                 #img(height = 43, width = 20, src = "white.png",class="pull-right"),
                  img(height = 43, width = 50, src = "UKM.png",class="pull-right")),
                  windowTitle="GEFAAR"
   ),
   sidebarPanel(
     shinyjs::useShinyjs(),
-    tabsetPanel(
+    tabsetPanel(id="config",
       tabPanel("Input",
                br(),
                column(4,offset = 10,actionButton('do_clear',"RESET",class = "btn-warning")),
@@ -51,6 +51,7 @@ shinyUI(fluidPage(
                tags$div(id = "inline", uiOutput("columnUI3")),
                tags$div(id = "inline", uiOutput("columnUI4")),
                tags$div(id = "inline", uiOutput("columnUI4b")),
+               tags$div(id = "inline", uiOutput("columnUI42")),
                tags$div(id = "inline", uiOutput("columnUI5")),
                h6(textOutput("columnUI6")),
                br(),
@@ -65,6 +66,7 @@ shinyUI(fluidPage(
                uiOutput("erregerstatUI3.2"),
                uiOutput("erregerstatUI4"),
                uiOutput("erregerstatUI4b"),
+               uiOutput("erregerstatUI4c"),
                hr(),
                uiOutput("erregerstatUI5")),
       tabPanel("Resistance statistics",
@@ -74,6 +76,7 @@ shinyUI(fluidPage(
                uiOutput("statistikUI2"),
                uiOutput("statistikUI3.2"),
                uiOutput("statistikUI4"),
+               uiOutput("statistikUI4c"),
                uiOutput("statistikUI3"),
                hr(),
                uiOutput("statistikUI5"),
@@ -86,6 +89,7 @@ shinyUI(fluidPage(
                uiOutput("trendUI1"),
                uiOutput("trendUI3.2"),
                uiOutput("trendUI4"),
+               uiOutput("trendUI4c"),
                uiOutput("trendUI3"),
                uiOutput("trendUI3.3"),
                hr(),
@@ -101,6 +105,7 @@ shinyUI(fluidPage(
                h4(textOutput("anweisung")),
                uiOutput("bakteriumUI0a"),
                uiOutput("bakteriumUI0b"),
+               uiOutput("bakteriumUI0c"),
                hr(),
                uiOutput("bakteriumUI0"),
                hr(),
@@ -124,6 +129,7 @@ shinyUI(fluidPage(
                hr(),
                uiOutput("downloadUIbak0a"),
                uiOutput("downloadUIbak0b"),
+               uiOutput("downloadUIbak0c"),
                hr(),
                uiOutput("downloadUI3"),
                hr(),
@@ -154,39 +160,25 @@ shinyUI(fluidPage(
                hr(),
                h4(htmlOutput("text_info2h")),
                hr(),
-               h3(textOutput("text_info1")),
-               hr(),
-               img(height = 129, width = 162, src = "IMI.png"),
-               hr(),
+               h4(textOutput("text_info1")),
                h5(textOutput("text_info2a")),
+               hr(),
+               h4(textOutput("text_info1b")),
                h5(textOutput("text_info2c")),
-               h5(textOutput("text_info2d")),
                hr(),
+               h4(textOutput("text_info2d")),
                h5(textOutput("text_info2b")),
-               h5(textOutput("text_info2b2")),
                hr(),
-               hr(),
-               h3(textOutput("text_info1b")),
-               hr(),
-               h5(textOutput("text_info2e")),
-               h5(textOutput("text_info2f")),
-               hr(),
-               hr(),
-               hr(),
-               hr(),
-               hr(),
-               h6(textOutput("text_info2g"))#,
-               #tags$head(tags$style("#text_info2a{color: black;
-              #                   font-size: 20px;
-              #                   font-style: bold;
-              #                   }"))
+               br(),
+               br(),
+               h6(textOutput("text_info2g"))
                )
     )
     
   ),
   mainPanel(
     shinyjs::useShinyjs(),
-    tabsetPanel(
+    tabsetPanel(id="main",
       tabPanel("Log",
                h3("Log"),
                div(id = "text")
