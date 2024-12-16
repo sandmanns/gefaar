@@ -1,6 +1,16 @@
 # GEFAAR
 A Generic Framework for the Analysis of Antimicrobial Resistance
 
+<p align="center">
+    <img height="600" src="https://uni-muenster.sciebo.de/s/AgQuq2qtcs8sW97/download">
+</p>
+
+Sandmann, S., Schaumburg, F. & Varghese, J. GEFAAR: a generic framework for the analysis of antimicrobial resistance providing statistics and cluster analyses. Sci Rep 13, 16922 (2023). https://doi.org/10.1038/s41598-023-44109-3
+
+## New features 16/12/2024
+* We are now using shinyWidgets, which allows you to perform an individual selection of years, clinics, species, specimen and antimicrobial agents (no longer one vs all).
+* "Isolate" is included as additional input column, allowing you to perform analysis on all vs just the first isolate per patient
+
 ## Requirements
 To run GEFAAR, you need R (Version 4.1.0 or higher) and R Shiny.
 
