@@ -768,7 +768,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
                             ORD_FACHBEREICH=input2[,names(input2)==input$column2],
                             ORD_DATUM=as.character(input2[,names(input2)==input$column4]),
                             RES_ERREGER=input2[,names(input2)==input$column1],
-                            X_STATUS=1)
+                            X_STATUS=input2[,names(input2)==input$column42])
 
       input_neu<-cbind(input_neu,input2[,c(which(names(input2)==input$column5):length(input2[1,]))])
       
@@ -2401,7 +2401,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
         maxlength<-max(strwidth(table_export[3,2], unit = "in") * 11.2838 ,
                        strwidth(table_export[4,2], unit = "in") * 11.2838 ,
                        strwidth(table_export[5,2], unit = "in") * 11.2838 ,
-                       strwidth(table_export[6,2], unit = "in") * 11.2838 )
+                       strwidth(table_export[7,2], unit = "in") * 11.2838 )
         
         setColWidths(wb,sheet="Data sheet antimicrobial agents",cols = c(2),widths = min(120,maxlength))
         
@@ -2423,7 +2423,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
         if((strwidth(table_export[7,2], unit = "in") * 11.2838)>120){
           setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(7),
                         heights = c(13+11.05*(floor((strwidth(table_export[7,2], unit = "in") * 11.2838)/120))))
-          addStyle(wb,sheet="",topalign,rows=6,cols=1,stack=T)
+          addStyle(wb,sheet="",topalign,rows=7,cols=1,stack=T)
         }
         
         setRowHeights(wb,sheet="Data sheet antimicrobial agents",rows = c(2,8),heights = 30)
@@ -2449,7 +2449,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
         #  eintrag_laenge_update<-eintrag_laenge
         #}
         
-        beginn<-8
+        beginn<-9
         table_export_all<-data.frame(V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,V6=NA,V7=NA)
         rows_daten1<-c()
         rows_daten2<-c()
@@ -2491,7 +2491,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
           add_height<-add_height+(40/7.8)*(7.8/1000*(300+50*eintrag_laenge_update[erreger]))
         }
         
-        writeData(wb,sheet="Data sheet antimicrobial agents",table_export_all,colNames = F,rowNames = F,startRow = 7)
+        writeData(wb,sheet="Data sheet antimicrobial agents",table_export_all,colNames = F,rowNames = F,startRow = 8)
         
         addStyle(wb,sheet="Data sheet antimicrobial agents",rows=rows_daten1,cols=1:7,style = linie,gridExpand = T, stack=T)
         addStyle(wb,sheet="Data sheet antimicrobial agents",rows=rows_daten2,cols=1:7,style = hintergrund_grau,stack=T,gridExpand = T)
@@ -2920,7 +2920,7 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
           table_export[4,1]<-"Clinic/Unit"
           table_export[4,2]<-paste0(input$trend3,collapse = " + ")
           table_export[5,1]<-"Patient isolate"
-          table_export[5,2]<-paste0(ifelse(input$trend3c==F,"Alle","Ausschließlich 1."))
+          table_export[5,2]<-paste0(ifelse(input$trend3c==F,"All","Just first"))
           table_export[6,1]<-"Species"
           table_export[6,2]<-input$trend2 
           table_export[7,1]<-"Antimicrobial agent"
