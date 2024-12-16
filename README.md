@@ -18,7 +18,7 @@ To run GEFAAR, you need R (Version 4.1.0 or higher) and R Shiny.
 To install GEFAAR, just download the repository. All required packages will be installed, all functions loaded automatically by the help of the global.R script.
 
 ## Running GEFAAR
-GEFAAR is available as an R Shiny GUI. To run the software: 1) navigate to the folder in which the following files are stored: `global.R`, `ui.R`, `server.R`, `www/IMI.png`, `www/UKM.png` and `www/white.png`. 2) Execute `Run App`.
+GEFAAR is available as an R Shiny GUI. To run the software: 1) navigate to the folder in which the following files are stored: `global.R`, `ui.R`, `server.R`, `www/UKM.png` and `www/white.png`. 2) Execute `Run App`.
 
 
 ## Examplary use of GEFAAR
@@ -39,6 +39,7 @@ To execute any analyses with GEFAAR, in input file has to be 1) read in and 2) c
   * `...specimen` Name of the column containing information on the specimen, in which the species were detected.
   * `...date` Name of the column containing information on the date at which samples were taken.
     * `-> date format` Underlying date format used in the input file (one of: dd.mm.yy, dd.mm.yyyy, mm/dd/yy, mm/dd/yyyy, yy-mm-dd, yyyy-mm-dd)
+  * `...first isolate` Name of the column containing information on whether the sample represents the first isolate (1) or not (0).
   * `...first antimicrobial agent`Name of the column containing information on the first antimicrobial agent that was tested. All subsequent columns are assumed to contain information on antimicrobial agents as well. The following coding of resistance information is required: 'S' for susceptible, 'I' for susceptible increased exposure, 'R' for resistant, '-' for not analyzed (according to EUCAST).
       
 
@@ -46,11 +47,11 @@ To execute any analyses with GEFAAR, in input file has to be 1) read in and 2) c
 
 Select exemplary input file 'Example/Input/Examplary_input.txt' (for data on one year) or file 'Example/Input/Exemplary_input_3years.txt' (for data on three consecutive years) and separator `Tab`. Execute `Read in file`.
 
-Select column 'Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Specimen' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format` and 'Ampicillin' for `...first antimicrobial agent`. Execute `Configure input`.
+Select column 'Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Specimen' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format`, 'Isolate' for `...first isolate and 'Ampicillin' for `...first antimicrobial agent`. Execute `Configure input`.
 
 As an alternative, select `Load demo data` (data on three consecutive years) and execute `Read in file`.
 
-Columns containing information on species, clinic/unit, specimen, date, date format and first antimicrobial agent are already defined correctly by default ('Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Material' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format` and 'Ampicillin' for `...first antimicrobial agent`). Execute `Configure input`.
+Columns containing information on species, clinic/unit, specimen, date, date format, first isolate and first antimicrobial agent are already defined correctly by default ('Species' for `...species`, 'Clinic' for `...clinic/unit`, 'Material' for `...specimen`, 'Date' for `...date`, 'yyyy-mm-dd' for `-> date format`, 'Isolate' for `...First isolate` and 'Ampicillin' for `...first antimicrobial agent`). Execute `Configure input`.
 
 
 ## Pathogen statistics
@@ -60,9 +61,10 @@ As soon as an input file has been uploaded and configured, pathogen statistics c
 ### Details
 
 * `Year` Select the year for which data shall be analyzed (default: first available year)
-* `Specimen` Select all or a specific specimen for which pathogen statistics shall be determined (default: all).
-* `Clinic/Unit` Select all or a specific clinic/unit for which pathogen statistics shall be determined (default: all).
+* `Specimen` Select the specimen for which pathogen statistics shall be determined.
+* `Clinic/Unit` Select the clinics/units for which pathogen statistics shall be determined.
 * `Cut-off min. 30 cases` Select if cut-off of at least 30 cases shall be applied (as in WHO GLASS Report) (default: yes).
+* `Analyze only first patient isolate` Select if only the first patient isolate shall be analyzed (default: no).
 
 Input options are interactively updated, dependent on the uploaded input file (e.g. only those years can be selected that are available in the previously defined date-column).
 
@@ -84,9 +86,10 @@ As soon as an input file has been uploaded and configured, resistance statistics
 ### Details
 
 * `Year` Select the year for which data shall be analyzed (default: first available year)
-* `Specimen` Select all or a specific specimen for which resistance statistics shall be determined (default: all).
-* `Clinic/Unit` Select all or a specific clinic/unit for which resistance statistics shall be determined (default: all).
-* `Species` Select all or a specific species for which resistance statistics shall be determined (default: all).
+* `Specimen` Select the specimen for which resistance statistics shall be determined .
+* `Clinic/Unit` Select the clinics/units for which resistance statistics shall be determined.
+* `Analyze only first patient isolate` Select if only the first patient isolate shall be analyzed (default: no).
+* `Species` Select the species for which resistance statistics shall be determined.
 
 Input options are interactively updated, dependent on the uploaded input file (e.g. only those years can be selected that are available in the previously defined date-column).
 
@@ -108,6 +111,7 @@ As soon as an input file has been uploaded and configured, trend analysis can be
 
 * `Specimen` Select all or a specific specimen for which trend analysis shall be conducted (default: all).
 * `Clinic/Unit` Select all or a specific clinic/unit for which trend analysis shall be conducted (default: all).
+* `Analyze only first patient isolate` Select if only the first patient isolate shall be analyzed (default: no).
 * `Species` Select a specific species for which trend analysis shall be conducted (default: first available species).
 * `Antimicrobial agent` Select all or a specific antimicrobial agent for which trend analysis shall be conducted (default: all).
 
