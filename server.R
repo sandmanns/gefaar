@@ -66,7 +66,7 @@ The application is not a medical device according to the Medical Devices Act or 
   output$text_info2d<-renderText({"Please cite as:"})
   output$text_info2b<-renderText({"Sandmann et al. GEFAAR: a generic framework for the analysis of antimicrobial resistance providing statistics and cluster analyses. 
 Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
-  output$text_info2g<-renderText({"Latest update: 09.12.2024"})
+  output$text_info2g<-renderText({"Latest update: 07.05.2025"})
 
   output$anweisung0pre<-renderText({"Please read in a file and configure input first"})
   output$anweisung1pre<-renderText({"Please read in a file and configure input first"})
@@ -2365,8 +2365,8 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
         table_export[7,1]<-"Species"
         table_export[7,2]<-paste0(input$statistik2,collapse = ", ")
 
-        insertImage(wb,sheet="Data sheet antimicrobial agents",file = "www/UKM.png",
-                    height = 0.516, width = 0.6,
+        insertImage(wb,sheet="Data sheet antimicrobial agents",file = "www/OVGU.png",
+                    height = 0.516, width = 1.4835,
                     startRow = 1,startCol = 1)
         
         writeData(wb,sheet="Data sheet antimicrobial agents",table_export,colNames = F,rowNames = F)
@@ -2434,8 +2434,8 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
         addStyle(wb,sheet="Figures antimicrobial agents",rows=c(1:5000),cols=1:27,
                  gridExpand = T,style=all_white)
         
-        insertImage(wb,sheet="Figures antimicrobial agents",file = "www/UKM.png",
-                    height = 0.516, width = 0.6,
+        insertImage(wb,sheet="Figures antimicrobial agents",file = "www/OVGU.png",
+                    height = 0.516, width = 1.4835,
                     startRow = 1,startCol = 1)
         setRowHeights(wb,sheet="Figures antimicrobial agents",rows = 1,heights = 43)
         
@@ -2907,8 +2907,8 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
           addStyle(wb,sheet="Trend",rows=c(1:5000),cols=1:27,
                    gridExpand = T,style=all_white)
           
-          insertImage(wb,sheet="Trend",file = "www/UKM.png",
-                      height = 0.516, width = 0.6,
+          insertImage(wb,sheet="Trend",file = "www/OVGU.png",
+                      height = 0.516, width = 1.4835,
                       startRow = 1,startCol = 1)
           setRowHeights(wb,sheet="Trend",rows = 1,heights = 43)
           
@@ -4617,8 +4617,8 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
            yaxt="n",bty="n",main="")
       text(x=0.5,y=1.3,"Resistance Cluster Analyses",cex=3)
       text(x=0.5,y=1,Sys.Date(),cex=1.5)
-      ukmlogo<-readPNG("www/UKM.png")
-      rasterImage(ukmlogo,0.3,0,0.4,0.4)
+      ukmlogo<-readPNG("www/OVGU.png")
+      rasterImage(ukmlogo,0.3,0,0.5875,0.4)
 
       download_helper1bakterien<-helper1bakterien
       download_years_bakterien<-years_bakterien
