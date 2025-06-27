@@ -7,7 +7,7 @@ A Generic Framework for the Analysis of Antimicrobial Resistance
 
 Sandmann, S., Schaumburg, F. & Varghese, J. GEFAAR: a generic framework for the analysis of antimicrobial resistance providing statistics and cluster analyses. Sci Rep 13, 16922 (2023). https://doi.org/10.1038/s41598-023-44109-3.
 
-Try it at: https://gefaar.uni-muenster.de/
+Try it at: https://gefaar.diz-ag.med.ovgu.de
 
 ## New features 16/12/2024
 * We are now using shinyWidgets, which allows you to perform an individual selection of years, clinics, species, specimen and antimicrobial agents (no longer one vs all).
