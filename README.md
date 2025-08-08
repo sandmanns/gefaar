@@ -9,6 +9,10 @@ Sandmann, S., Schaumburg, F. & Varghese, J. GEFAAR: a generic framework for the 
 
 Try it at: https://gefaar.diz-ag.med.ovgu.de
 
+## New features 08/08/2025
+* We added a bigger, more realistic, simulated demo data set, including 25 species, 47 antimicrobials and data from 2020 to 2024.
+* Minor bug fixes.
+  
 ## New features 16/12/2024
 * We are now using shinyWidgets, which allows you to perform an individual selection of years, clinics, species, specimen and antimicrobial agents (no longer one vs all).
 * "Isolate" is included as additional input column, allowing you to perform analysis on all vs just the first isolate per patient
