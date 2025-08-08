@@ -6,8 +6,8 @@ library(stringi)
 shinyUI(fluidPage(
   theme = shinytheme("cerulean"),
   titlePanel(div("GEFAAR: a GEneric Framework for the Analysis of Antimicrobial Resistance",
-                 #img(height = 43, width = 54, src = "IMI.png",class="pull-right"),
-                 #img(height = 43, width = 20, src = "white.png",class="pull-right"),
+                 img(height = 40, width = 60.6, src = "medlogo.jpeg",class="pull-right"),
+                 img(height = 40, width = 20, src = "white.png",class="pull-right"),
                  img(height = 43, width = 123.6, src = "OVGU.png",class="pull-right")),
                  windowTitle="GEFAAR"
   ),
