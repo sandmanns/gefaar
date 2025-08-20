@@ -2530,6 +2530,26 @@ Sci Rep. 2023 Oct 7;13(1):16922. doi: 10.1038/s41598-023-44109-3. "})
 
       if(!is.null(input$analysis_type1c)&&input$analysis_type1c==T){
         input2<-input2[input2$X_STATUS>0,]
+        
+        if(input$column4b=="dd.mm.yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%y")
+        }
+        if(input$column4b=="dd.mm.yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
+        }
+        if(input$column4b=="mm/dd/yy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%y")
+        }
+        if(input$column4b=="mm/dd/yyyy"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%m/%d/%Y")
+        }
+        if(input$column4b=="yy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%y-%m-%d")
+        }
+        if(input$column4b=="yyyy-mm-dd"){
+          helper1bakterien<-as.Date(input2$ORD_DATUM,format = "%Y-%m-%d")
+        }
+        years_bakterien<-unique(format(helper1bakterien,"%Y"))
       }
       #helper1cluster<-as.Date(input2$ORD_DATUM,format = "%d.%m.%Y")
       if(input$column4b=="dd.mm.yy"){
